@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "733375775040",
+    "firebase_url": "https://cmsc436-feelings-diary.firebaseio.com",
+    "project_id": "cmsc436-feelings-diary",
+    "storage_bucket": "cmsc436-feelings-diary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733375775040:android:bc76746ea717ddd4f8faa5",
+        "android_client_info": {
+          "package_name": "com.example.feelings_diary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733375775040-0fu66u9vr9357tsmsu7082mic90vp1d7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQD05xC6yeX4MskqTAwCJwQuOM5Z3LW-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733375775040-0fu66u9vr9357tsmsu7082mic90vp1d7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
