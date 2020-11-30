@@ -3,10 +3,7 @@ package com.example.feelings_diary
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -19,6 +16,11 @@ class LoginActivity : AppCompatActivity() {
     private var userPassword: EditText? = null
     private var loginBtn: Button? = null
     private var progressBar: ProgressBar? = null
+    private var tenantID: String? = null
+    private var radioFlag = false
+    private var radioGroup: RadioGroup? = null
+    private var radioButtonPatient: RadioButton? = null
+    private var radioButtonTherapist: RadioButton? = null
 
     private var mAuth: FirebaseAuth? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +35,39 @@ class LoginActivity : AppCompatActivity() {
         userPassword = findViewById(R.id.password)
         loginBtn = findViewById(R.id.login)
         progressBar = findViewById(R.id.progressBar)
+        radioGroup = findViewById(R.id.login_radio)
+        radioButtonPatient = findViewById(R.id.login_radio_choice1)
+        radioButtonTherapist = findViewById(R.id.login_radio_choice2)
+
+
+        if (!intent.getStringExtra("email").isNullOrEmpty()) {
+            userEmail!!.setText(intent.getStringExtra("email"))
+        }
+        if (!intent.getStringExtra("password").isNullOrEmpty()) {
+            userPassword!!.setText(intent.getStringExtra("password"))
+        }
+
+        if (!intent.getStringExtra("tenantID").isNullOrEmpty()){
+            tenantID = intent.getStringExtra("tenantID")
+            if(tenantID.equals("therapist",true)){
+                radioButtonTherapist!!.isChecked = true
+            }else if (tenantID.equals("patient",true)){
+                radioButtonPatient!!.isChecked = true
+            }
+            radioFlag = true
+        }
 
         loginBtn!!.setOnClickListener { loginUserAccount() }
+    }
+
+    fun loginRadioClickCallback(v:View){
+        val rb = v as RadioButton
+
+        // RadioButtons report each click, even if the toggle state doesn't change
+        if (rb.isChecked) {
+            tenantID = rb.toString()
+            radioFlag = true
+        }
     }
 
     // TODO: Allow the user to log into their account
@@ -55,13 +88,24 @@ class LoginActivity : AppCompatActivity() {
 
             return
         }
+        if(!radioFlag){
+            Toast.makeText(applicationContext,"Please select patient or therapist status",Toast.LENGTH_LONG).show()
+            return
+        }
+        mAuth!!.setTenantId(tenantID!!)
 
         mAuth!!.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
             progressBar!!.visibility = View.GONE
             if (task.isSuccessful){
                 Toast.makeText(applicationContext,"Login Successful",Toast.LENGTH_LONG).show()
-                startActivity(Intent(this@LoginActivity,DashboardActivity::class.java).putExtra(USER_ID,
-                    mAuth!!.currentUser!!.uid))
+                if(tenantID.equals("therapist",true)){
+                    startActivity(Intent(this@LoginActivity,therapistDashboardActivity::class.java).putExtra(USER_ID,
+                        mAuth!!.currentUser!!.uid))
+                }else if (tenantID.equals("patient",true)){
+                    startActivity(Intent(this@LoginActivity,patientDashboardActivity::class.java).putExtra(USER_ID,
+                        mAuth!!.currentUser!!.uid))
+                }
+
             }else{
                 Toast.makeText(applicationContext,"Login Failed",Toast.LENGTH_LONG).show()
             }

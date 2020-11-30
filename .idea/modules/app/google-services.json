@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "600025539956",
+    "firebase_url": "https://feelings-diary-b4803.firebaseio.com",
+    "project_id": "feelings-diary-b4803",
+    "storage_bucket": "feelings-diary-b4803.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600025539956:android:fa9bb52da62ef1e31af821",
+        "android_client_info": {
+          "package_name": "com.example.feelings_diary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "600025539956-ss1trhkpql5krpl8ejljtfrf398hgpmj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.feelings_diary",
+            "certificate_hash": "285e28de29fa0d5bcdbedb88aed48ef498ac7c56"
+          }
+        },
+        {
+          "client_id": "600025539956-70v545ltq3vfbh7rafd273aj85tp0b34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXxBI8T3FIM-3BmFoNK-bjbUc6ZTxNjp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600025539956-70v545ltq3vfbh7rafd273aj85tp0b34.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

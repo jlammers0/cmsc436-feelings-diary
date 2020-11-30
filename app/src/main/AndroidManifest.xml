@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.example.feelings_diary.LoginActivity"/>
+        <activity android:name="com.example.feelings_diary.RegistrationActivity"/>
+        <activity android:name="com.example.feelings_diary.patientDashboardActivity"/>
+        <activity android:name="com.example.feelings_diary.therapistDashboardActivity"/>
     </application>
 
 </manifest>

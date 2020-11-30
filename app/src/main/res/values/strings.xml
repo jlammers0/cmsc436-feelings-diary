@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Feelings-Diary</string>
+    <string name="title_app_name">Feelings Diary</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="account_login">Feelings Diary Account Login</string>
+    <string name="register_new_account">Register new Feelings Diary account</string>
+    <string name="patient">Patient</string>
+    <string name="therapist">Therapist</string>
 </resources>
