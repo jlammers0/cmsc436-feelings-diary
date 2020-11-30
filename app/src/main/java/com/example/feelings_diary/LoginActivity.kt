@@ -92,14 +92,14 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(applicationContext,"Please select patient or therapist status",Toast.LENGTH_LONG).show()
             return
         }
-        mAuth!!.setTenantId(tenantID!!)
+        //mAuth!!.setTenantId(tenantID!!)
 
         mAuth!!.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
             progressBar!!.visibility = View.GONE
             if (task.isSuccessful){
                 Toast.makeText(applicationContext,"Login Successful",Toast.LENGTH_LONG).show()
                 if(tenantID.equals("therapist",true)){
-                    startActivity(Intent(this@LoginActivity,therapistDashboardActivity::class.java).putExtra(USER_ID,
+                    startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
                         mAuth!!.currentUser!!.uid))
                 }else if (tenantID.equals("patient",true)){
                     startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
