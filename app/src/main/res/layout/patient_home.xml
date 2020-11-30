@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/patientMailButton" />
+
+    <Button
+        android:id="@+id/patientCheckInButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/check_in"
+        app:layout_constraintEnd_toEndOf="@id/calendarView"
+        app:layout_constraintStart_toStartOf="@id/calendarView"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
+    <ImageButton
+        android:id="@+id/patientMailButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/patientCalendarButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/mail_icon"
+        tools:layout_editor_absoluteY="16dp"
+        android:contentDescription="@string/mail_icon"/>
+
+    <ImageButton
+        android:id="@+id/patientCalendarButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toStartOf="@id/patientSettingsButton"
+        app:layout_constraintStart_toEndOf="@id/patientMailButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/calendar_icon"
+        android:contentDescription="@string/calendar_icon" />
+
+    <ImageButton
+        android:id="@+id/patientSettingsButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@id/patientCalendarButton"
+        app:layout_constraintEnd_toStartOf="@id/patientLogoutButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/settings_icon"
+        tools:layout_editor_absoluteX="196dp"
+        tools:layout_editor_absoluteY="17dp"
+        android:contentDescription="@string/settings_icon"/>
+
+    <ImageButton
+        android:id="@+id/patientLogoutButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@id/patientSettingsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/logout_icon"
+        tools:layout_editor_absoluteX="289dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:contentDescription="@string/logout_icon"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

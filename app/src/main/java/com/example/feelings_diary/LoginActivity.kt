@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this@LoginActivity,therapistDashboardActivity::class.java).putExtra(USER_ID,
                         mAuth!!.currentUser!!.uid))
                 }else if (tenantID.equals("patient",true)){
-                    startActivity(Intent(this@LoginActivity,patientDashboardActivity::class.java).putExtra(USER_ID,
+                    startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
                         mAuth!!.currentUser!!.uid))
                 }
 

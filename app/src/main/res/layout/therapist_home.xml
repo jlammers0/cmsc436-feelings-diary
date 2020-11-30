@@ -10,7 +10,7 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginTop="150dp"
-        android:text="Patient List"
+        android:text="@string/patient_list"
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,9 +31,9 @@
         android:id="@+id/checkInButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="28dp"
-        android:text="View Check-Ins"
+        android:text="@string/view_check_ins"
         app:layout_constraintEnd_toStartOf="@+id/messageButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/patientList" />
@@ -43,8 +43,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginRight="40dp"
-        android:text="Message"
+        android:layout_marginEnd="40dp"
+        android:text="@string/message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/patientList" />
 
@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:text="Schedule Appointment"
+        android:text="@string/schedule_appointment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messageButton" />
@@ -63,9 +63,74 @@
         android:layout_width="250dp"
         android:layout_height="60dp"
         android:layout_marginTop="20dp"
-        android:text="Query Patient Check-Ins"
+        android:text="@string/query_patient_check_ins"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aptButton" />
+
+    <ImageButton
+        android:id="@+id/therapistMailButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/therapistCalendarButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/mail_icon"
+        tools:layout_editor_absoluteY="16dp"
+        android:contentDescription="@string/mail_icon"/>
+
+    <ImageButton
+        android:id="@+id/therapistCalendarButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toStartOf="@id/therapistAddPatientButton"
+        app:layout_constraintStart_toEndOf="@id/therapistMailButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/calendar_icon"
+        android:contentDescription="@string/calendar_icon" />
+    <ImageButton
+        android:id="@+id/therapistAddPatientButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toStartOf="@id/therapistSettingsButton"
+        app:layout_constraintStart_toEndOf="@id/therapistCalendarButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/add_patient_icon"
+        android:contentDescription="@string/calendar_icon" />
+
+    <ImageButton
+        android:id="@+id/therapistSettingsButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@id/therapistAddPatientButton"
+        app:layout_constraintEnd_toStartOf="@id/therapistLogoutButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/settings_icon"
+        tools:layout_editor_absoluteX="196dp"
+        tools:layout_editor_absoluteY="17dp"
+        android:contentDescription="@string/settings_icon"/>
+
+    <ImageButton
+        android:id="@+id/therapistLogoutButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@id/therapistSettingsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/logout_icon"
+        tools:layout_editor_absoluteX="289dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:contentDescription="@string/logout_icon"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
