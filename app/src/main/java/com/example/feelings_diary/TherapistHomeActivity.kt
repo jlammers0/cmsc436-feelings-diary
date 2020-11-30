@@ -2,6 +2,7 @@ package com.example.feelings_diary
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 
@@ -22,6 +23,8 @@ class TherapistHomeActivity : AppCompatActivity() {
 
         setContentView(R.layout.therapist_home)
 
+        Log.i(TAG,"Entered TherapistHomeActivity")
+
         // Init buttons
         checkInButton = findViewById(R.id.checkInButton)
         messageButton = findViewById(R.id.messageButton)
@@ -35,5 +38,8 @@ class TherapistHomeActivity : AppCompatActivity() {
 
 
         
+    }
+    companion object{
+        const val TAG = "feelings-diary-log"
     }
 }

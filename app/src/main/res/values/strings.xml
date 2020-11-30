@@ -19,4 +19,7 @@
     <string name="message">Message</string>
     <string name="schedule_appointment">Schedule Appointment</string>
     <string name="query_patient_check_ins">Query Patient Check-Ins</string>
+    <string name="feelings_illustration">feelings illustration</string>
+    <string name="add_a_comment_to_this_check_in">Add a comment to this check in</string>
+    <string name="today_i_am_feeling">Today I am feeling:</string>
 </resources>
