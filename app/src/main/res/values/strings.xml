@@ -22,4 +22,6 @@
     <string name="feelings_illustration">feelings illustration</string>
     <string name="add_a_comment_to_this_check_in">Add a comment to this check in</string>
     <string name="today_i_am_feeling">Today I am feeling:</string>
+    <string name="add_a_patient_please_enter_patient_email">Add a patient. Please enter patient email</string>
+    <string name="add_patient">Add Patient</string>
 </resources>
