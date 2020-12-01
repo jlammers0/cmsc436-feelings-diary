@@ -2,26 +2,23 @@ package com.example.feelings_diary
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class LoginActivity : AppCompatActivity() {
-    private var mDatabaseReference: DatabaseReference? = null
     private var mDatabase: FirebaseDatabase? = null
     private var userEmail: EditText? = null
     private var userPassword: EditText? = null
     private var loginBtn: Button? = null
     private var progressBar: ProgressBar? = null
     private var userGroup:String? = null
-    private var radioFlag = false
-    private var radioGroup: RadioGroup? = null
-    private var radioButtonPatient: RadioButton? = null
-    private var radioButtonTherapist: RadioButton? = null
+
+
 
     private var mAuth: FirebaseAuth? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +27,6 @@ class LoginActivity : AppCompatActivity() {
         Log.i(TAG,"Entered LoginActivity")
 
         mDatabase = FirebaseDatabase.getInstance()
-        mDatabaseReference = mDatabase!!.reference.child("Users")
         mAuth = FirebaseAuth.getInstance()
 
         userEmail = findViewById(R.id.email)
@@ -72,28 +68,46 @@ class LoginActivity : AppCompatActivity() {
 
             return
         }
-        if(!radioFlag){
-            Toast.makeText(applicationContext,"Please select patient or therapist status",Toast.LENGTH_LONG).show()
-            return
-        }
-        //mAuth!!.setTenantId(tenantID!!)
 
+
+        var flag = false
         mAuth!!.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
             progressBar!!.visibility = View.GONE
             if (task.isSuccessful){
                 Toast.makeText(applicationContext,"Login Successful",Toast.LENGTH_LONG).show()
                 val uid = mAuth!!.currentUser!!.uid
-                val userGroup = mDatabaseReference!!.child(uid).key
+                Log.i(TAG,"uid = ${uid}")
 
-                if(userGroup.equals("therapist",true)){
-                    startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
-                        mAuth!!.currentUser!!.uid))
-                }else if (userGroup.equals("patient",true)){
-                    startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
-                        mAuth!!.currentUser!!.uid))
-                }else{
-                    Log.i(TAG,"User group did not match therapist or patient")
-                }
+
+                    FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener{
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        Log.i(TAG,"this was executed")
+                        var user: User? = null
+                        user = snapshot.child(uid).getValue(User::class.java)
+                        userGroup = user!!.group
+                        if(userGroup.equals("therapist",true)){
+                            startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
+                                mAuth!!.currentUser!!.uid))
+                        }else if (userGroup.equals("patient",true)){
+                            startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
+                                mAuth!!.currentUser!!.uid))
+                        }else{
+                            Log.i(TAG,"User group did not match therapist or patient")
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.i(TAG,"loading user group canceled")
+                    }
+                })
+
+
+
+
+
+
 
             }else{
                 Toast.makeText(applicationContext,"Login Failed",Toast.LENGTH_LONG).show()

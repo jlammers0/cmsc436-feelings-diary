@@ -25,7 +25,7 @@ class PatientHomeActivity : AppCompatActivity() {
         Log.i(TAG,"Entered PatientHomeActivity")
 
         calendarView = findViewById(R.id.calendarView)
-        checkInButton = findViewById(R.id.checkInButton)
+        checkInButton = findViewById(R.id.patientCheckInButton)
         mailButton = findViewById(R.id.patientMailButton)
         calendarButton = findViewById(R.id.patientCalendarButton)
         settingsButton = findViewById(R.id.patientSettingsButton)

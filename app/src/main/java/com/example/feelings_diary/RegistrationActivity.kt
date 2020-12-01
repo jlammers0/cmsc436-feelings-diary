@@ -36,7 +36,8 @@ class RegistrationActivity : AppCompatActivity() {
         regBtn = findViewById(R.id.register)
         progressBar = findViewById(R.id.progressBar)
         mDatabase = FirebaseDatabase.getInstance()
-        mDatabaseReference = mDatabase!!.reference.child("Users")
+        mDatabaseReference = mDatabase!!.reference
+
 
         regBtn!!.setOnClickListener { registerNewUser() }
     }
@@ -46,7 +47,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         // RadioButtons report each click, even if the toggle state doesn't change
         if (rb.isChecked) {
-            userGroup = rb.toString()
+            userGroup = rb!!.text.toString()
             radioFlag = true
         }
     }
@@ -62,7 +63,7 @@ class RegistrationActivity : AppCompatActivity() {
             return
         }
         if (!validator.validPassword(password)) {
-            Toast.makeText(applicationContext, "Please enter a valid password!", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Password must be between 6 and 16 characters and contain at least 1 letter and 1 number", Toast.LENGTH_LONG).show()
             return
         }
         if(!radioFlag){
@@ -79,14 +80,12 @@ class RegistrationActivity : AppCompatActivity() {
                         Log.i(TAG,"Registration successful")
                         progressBar!!.visibility = View.GONE
                         val uid = mAuth!!.currentUser!!.uid
-                        mDatabaseReference!!.push().key
+                        Log.i(TAG,"Uid = ${uid}")
                         val user = User(email,uid,userGroup!!)
-
-
+                        mDatabaseReference!!.child("users").child(uid).setValue(user)
                         val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
                         intent.putExtra("email",email)
                         intent.putExtra("password",password)
-                        intent.putExtra("tenantID",userGroup)
                         startActivity(intent)
                     } else {
                         Toast.makeText(applicationContext, "Registration failed! Please try again later", Toast.LENGTH_LONG).show()
