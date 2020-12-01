@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.util.*
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -83,6 +84,39 @@ class RegistrationActivity : AppCompatActivity() {
                         Log.i(TAG,"Uid = ${uid}")
                         val user = User(email,uid,userGroup!!)
                         mDatabaseReference!!.child("users").child(uid).setValue(user)
+
+                        //Welcome message and initializing inbox to test message system
+                        if (user.group.equals("patient",true)) {
+                            mDatabaseReference!!.child("inbox").child(uid).setValue(
+                                Message(
+                                    Date(System.currentTimeMillis()),
+                                    "Feelings Diary Creators",
+                                    email,
+                                    MessageType.MESSAGE,
+                                    "Welcome to Feelings Diary!",
+                                    "Thank you for trying out our App! " +
+                                            "You can use this as a standalone program to log your feelings " +
+                                            "or link your account to a therapist to unlock the full" +
+                                            " potential of our app! ${System.lineSeparator()} Best Wishes, ${System.lineSeparator()} Feelings Diary Team"
+                                )
+                            )
+                        }else if (user.group.equals("therapist",true)){
+                            mDatabaseReference!!.child("inbox").child(uid).setValue(
+                                Message(
+                                    Date(System.currentTimeMillis()),
+                                    "Feelings Diary Creators",
+                                    email,
+                                    MessageType.MESSAGE,
+                                    "Welcome to Feelings Diary!",
+                                    "Thank you for trying out our App! " +
+                                            "You can link your account to a patient to start staying up to date on their " +
+                                            "feelings check-ins, schedule meetings, send messages, and more!" +
+                                            "${System.lineSeparator()} Best Wishes, ${System.lineSeparator()} Feelings Diary Team"
+                                )
+                            )
+                        }
+
+
                         val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
                         intent.putExtra("email",email)
                         intent.putExtra("password",password)
