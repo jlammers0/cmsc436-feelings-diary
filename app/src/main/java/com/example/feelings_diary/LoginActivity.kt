@@ -46,6 +46,33 @@ class LoginActivity : AppCompatActivity() {
 
 
         loginBtn!!.setOnClickListener { loginUserAccount() }
+
+        if (mAuth!!.currentUser != null){
+            val uid = mAuth!!.currentUser!!.uid
+            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener{
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.i(TAG,"this was executed")
+                    var user: User? = null
+                    user = snapshot.child(uid).getValue(User::class.java)
+                    userGroup = user!!.group
+                    if(userGroup.equals("therapist",true)){
+                        startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
+                            mAuth!!.currentUser!!.uid))
+                    }else if (userGroup.equals("patient",true)){
+                        startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
+                            mAuth!!.currentUser!!.uid))
+                    }else{
+                        Log.i(TAG,"User group did not match therapist or patient")
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(TAG,"loading user group canceled")
+                }
+            })
+        }
     }
 
 
