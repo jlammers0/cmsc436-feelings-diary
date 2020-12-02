@@ -58,6 +58,7 @@ class TherapistHomeActivity : AppCompatActivity() {
 
         logoutButton.setOnClickListener{
             mAuth!!.signOut()
+            Toast.makeText(applicationContext,"You have been successfully logged out",Toast.LENGTH_LONG).show()
             startActivity(Intent(this@TherapistHomeActivity,LoginActivity::class.java))
         }
 

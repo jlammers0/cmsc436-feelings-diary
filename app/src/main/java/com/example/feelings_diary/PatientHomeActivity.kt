@@ -1,12 +1,16 @@
 package com.example.feelings_diary
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class PatientHomeActivity : AppCompatActivity() {
 
@@ -16,6 +20,8 @@ class PatientHomeActivity : AppCompatActivity() {
     private var calendarButton:ImageButton?=null
     private var settingsButton:ImageButton?=null
     private var logoutButton:ImageButton?=null
+    private var mAuth: FirebaseAuth? = null
+    private var mDatabase: FirebaseDatabase? = null
 
 
 
@@ -30,9 +36,16 @@ class PatientHomeActivity : AppCompatActivity() {
         calendarButton = findViewById(R.id.patientCalendarButton)
         settingsButton = findViewById(R.id.patientSettingsButton)
         logoutButton = findViewById(R.id.patientLogoutButton)
+        mAuth = FirebaseAuth.getInstance()
+        mDatabase = FirebaseDatabase.getInstance()
 
         checkInButton!!.setOnClickListener { showCheckInDialog() }
 
+        logoutButton!!.setOnClickListener{
+            mAuth!!.signOut()
+            Toast.makeText(applicationContext,"You have been successfully logged out", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this@PatientHomeActivity,LoginActivity::class.java))
+        }
 
     }
 
