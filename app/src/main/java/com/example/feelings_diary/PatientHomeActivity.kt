@@ -41,6 +41,8 @@ class PatientHomeActivity : AppCompatActivity() {
 
         checkInButton!!.setOnClickListener { showCheckInDialog() }
 
+        settingsButton
+
         logoutButton!!.setOnClickListener{
             mAuth!!.signOut()
             Toast.makeText(applicationContext,"You have been successfully logged out", Toast.LENGTH_LONG).show()
