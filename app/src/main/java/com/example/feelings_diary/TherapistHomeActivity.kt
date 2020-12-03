@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -29,8 +27,10 @@ class TherapistHomeActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var mDatabase: FirebaseDatabase? = null
     private lateinit var databasePatients: DatabaseReference
+    private lateinit var databaseProspectivePatients: DatabaseReference
     private var uid:String? = null
     private lateinit var patients: MutableList<User>
+    private lateinit var prospectivePatients: MutableList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,9 @@ class TherapistHomeActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance()
         databasePatients = FirebaseDatabase.getInstance().getReference("patients")
+        databaseProspectivePatients = FirebaseDatabase.getInstance().getReference("prospectivePatients")
         patients = ArrayList()
+        prospectivePatients = ArrayList()
 
         uid = intent.getStringExtra(USER_ID)
 
@@ -63,43 +65,89 @@ class TherapistHomeActivity : AppCompatActivity() {
         }
 
         addPatientButton.setOnClickListener{
-            val patientEmail: String? = null
+            var patientEmail: String? = null
 
             val dialogBuilder = AlertDialog.Builder(this)
             val inflater = layoutInflater
             val dialogView = inflater.inflate(R.layout.therapist_find_patient,null)
             dialogBuilder.setView(dialogView)
 
-            val patientEmailView = findViewById<View>(R.id.patientEmail)
-            val patientAddButton = findViewById<View>(R.id.addPatientButton)
 
+            val patientAddButton = findViewById<View>(R.id.addPatientButton) as Button
+            val patientIgnoreButton = findViewById<View>(R.id.ignorePatientButton) as Button
+            val prospectivePatientList = findViewById<View>(R.id.prospectivePatientList) as ListView
 
+            val patientAdapter = ProspectivePatientList(this@TherapistHomeActivity,patients)
+            prospectivePatientList.adapter = patientAdapter
 
+            prospectivePatientList.onItemClickListener = AdapterView.OnItemClickListener{ _, _, i, _ ->
+                patientEmail = prospectivePatients[i].email
 
+            }
 
-            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var user: User? = null
-                    for (data in snapshot.children){
-                        user = data.getValue(User::class.java)
-                        if (user!!.email == patientEmail && user!!.group == "patient"){
-                            break
+            patientAddButton.setOnClickListener{
+                if (patientEmail.isNullOrEmpty()){
+                    Toast.makeText(applicationContext,"Please select patient email from prospective patient list ",Toast.LENGTH_LONG).show()
+                }else{
+                    FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            var user: User? = null
+                            for (data in snapshot.children){
+                                user = data.getValue(User::class.java)
+                                if (user!!.email == patientEmail && user!!.group == "patient"){
+                                    break
+                                }
+                            }
+                            if (user == null){
+                                Log.i(TAG,"User was not found")
+                                Toast.makeText(applicationContext,"Requested patient was not found", Toast.LENGTH_LONG).show()
+                            }else{
+                                patients.add(user)
+                                prospectivePatients.remove(user)
+                                mDatabase!!.reference!!.child("prospectivePatients").child(uid!!).child(user.uid).removeValue()
+                                mDatabase!!.reference!!.child("patients").child(uid!!).child(user.uid).setValue(user)
+                            }
+
                         }
-                    }
-                    if (user == null){
-                        Log.i(TAG,"User was not found")
-                        Toast.makeText(applicationContext,"Requested patient was not found", Toast.LENGTH_LONG).show()
-                    }else{
-                        patients.add(user)
-                        mDatabase!!.reference!!.child("patients").child(uid!!).child(user.uid).setValue(user)
-                    }
 
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.i(TAG, "loading user group canceled")
+                        }
+                    })
                 }
+            }
+            patientIgnoreButton.setOnClickListener{
+                if (patientEmail.isNullOrEmpty()){
+                    Toast.makeText(applicationContext,"No patient request selected",Toast.LENGTH_LONG).show()
+                }else{
+                    FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            var user: User? = null
+                            for (data in snapshot.children){
+                                user = data.getValue(User::class.java)
+                                if (user!!.email == patientEmail && user!!.group == "patient"){
+                                    break
+                                }
+                            }
+                            if (user == null){
+                                Log.i(TAG,"User was not found")
+                                Toast.makeText(applicationContext,"Requested patient was not found", Toast.LENGTH_LONG).show()
+                            }else{
+                                prospectivePatients.remove(user)
+                                mDatabase!!.reference!!.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()
+                            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.i(TAG, "loading user group canceled")
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.i(TAG, "loading user group canceled")
+                        }
+                    })
                 }
-            })
+            }
+
+
+
         }
         
     }
@@ -122,6 +170,33 @@ class TherapistHomeActivity : AppCompatActivity() {
                 }
 
             }
+
+
+
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(TAG, "loading patients was canceled")
+            }
+        })
+
+        databaseProspectivePatients.addValueEventListener(object:ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                patients.clear()
+                var user: User? = null
+                for (data in snapshot.child(uid!!).children){
+                    try {
+                        user = data.getValue(User::class.java)
+                    }catch (e:Exception){
+                        Log.e(TAG,e.toString())
+                    }finally{
+                        prospectivePatients.add(user!!)
+                    }
+                }
+
+            }
+
+
+
 
             override fun onCancelled(error: DatabaseError) {
                 Log.i(TAG, "loading patients was canceled")
