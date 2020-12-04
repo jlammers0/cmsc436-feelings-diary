@@ -55,8 +55,30 @@
         app:layout_constraintTop_toBottomOf="@+id/patientFeelingsSeekBar"
         app:layout_constraintVertical_bias="0.333
 " />
+    <Button
+        android:id="@+id/completeCheckinButton"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/patentCheckInComment"
+        app:layout_constraintEnd_toStartOf="@id/cancelCheckinButton"
+        app:layout_constraintTop_toBottomOf="@id/patentCheckInComment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/save_check_in"
 
-   
+        />
+
+    <Button
+        android:id="@+id/cancelCheckinButton"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/patentCheckInComment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/completeCheckinButton"
+        app:layout_constraintEnd_toEndOf="@id/patentCheckInComment"
+        android:text="@string/cancel_check_in"/>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

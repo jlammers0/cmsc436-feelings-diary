@@ -3,5 +3,5 @@ package com.example.feelings_diary
 enum class MessageType {
     //add more message types here
 
-    MESSAGE,MEETINGREQUEST,PATIENTREQUEST
+    MESSAGE,MEETING
 }

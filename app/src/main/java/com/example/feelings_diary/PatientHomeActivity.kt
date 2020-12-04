@@ -19,6 +19,7 @@ class PatientHomeActivity : AppCompatActivity() {
     private var mailButton:ImageButton?=null
     private var calendarButton:ImageButton?=null
     private var settingsButton:ImageButton?=null
+    private var patientAddTherapistButton: ImageButton?= null
     private var logoutButton:ImageButton?=null
     private var mAuth: FirebaseAuth? = null
     private var mDatabase: FirebaseDatabase? = null
@@ -38,10 +39,16 @@ class PatientHomeActivity : AppCompatActivity() {
         logoutButton = findViewById(R.id.patientLogoutButton)
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance()
+        patientAddTherapistButton = findViewById(R.id.patientAddTherapistButton)
 
-        checkInButton!!.setOnClickListener { showCheckInDialog() }
+        checkInButton!!.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(this)
+            val inflater = layoutInflater
+            val dialogView = inflater.inflate(R.layout.patient_check_in,null)
+            dialogBuilder.setView(dialogView)
 
-        settingsButton
+        }
+
 
         logoutButton!!.setOnClickListener{
             mAuth!!.signOut()
@@ -49,18 +56,20 @@ class PatientHomeActivity : AppCompatActivity() {
             startActivity(Intent(this@PatientHomeActivity,LoginActivity::class.java))
         }
 
+        patientAddTherapistButton!!.setOnClickListener{
+            val dialogBuilder = AlertDialog.Builder(this)
+            val inflater = layoutInflater
+            val dialogView = inflater.inflate(R.layout.patient_find_therapist,null)
+            dialogBuilder.setView(dialogView)
+        }
+
+        mailButton!!.setOnClickListener{
+
+        }
+
     }
 
-    private fun showCheckInDialog(){
 
-        val dialogBuilder = AlertDialog.Builder(this)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.patient_check_in,null)
-        dialogBuilder.setView(dialogView)
-
-
-
-    }
 
     companion object{
         const val TAG = "feelings-diary-log"
