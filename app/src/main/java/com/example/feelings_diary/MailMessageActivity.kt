@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
+import java.util.*
 
 class MailMessageActivity: AppCompatActivity() {
 
@@ -20,10 +22,12 @@ class MailMessageActivity: AppCompatActivity() {
     private var deleteButton: Button? = null
     private var databaseInbox: DatabaseReference? = null
     private var uid: String? = null
-
+    private var linearLayout: LinearLayout? = null
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.mail_view)
+        setContentView(R.layout.mail_message_view)
+
+        linearLayout = findViewById(R.id.mailMessageView)
 
         mailDateView = findViewById(R.id.mailDate)
         mailFromView = findViewById(R.id.mailFrom)
@@ -45,15 +49,17 @@ class MailMessageActivity: AppCompatActivity() {
         mailBodyView!!.text = intent.getStringExtra("body")
 
         deleteButton!!.setOnClickListener{
-           FirebaseDatabase.getInstance().reference.child("inbox").child(uid!!).child(intent.getStringExtra("date")).removeValue()
-            startActivity(Intent(this@MailMessageActivity,MailInboxActivity::class.java))
+            val date = intent.getStringExtra("date")
+           FirebaseDatabase.getInstance().reference.child("inbox").child(uid!!).child(date!!).removeValue()
+            startActivity(Intent(this@MailMessageActivity,MailInboxActivity::class.java).putExtra(
+                USER_ID,uid))
         }
 
         replyButton!!.setOnClickListener{
 
             if (intent.getStringExtra("from").equals("Feelings Diary Team",true)){
                 Toast.makeText(applicationContext,"This message is from an automated user which cannot receive replies.",Toast.LENGTH_LONG).show()
-
+                Log.i(TAG,"User tried to reply to Feelings Diary Team")
             }else{
                 val messageIntent = Intent(this@MailMessageActivity,MailReplyActivity::class.java)
                 messageIntent.putExtra(MailInboxActivity.USER_ID,uid)
@@ -64,8 +70,17 @@ class MailMessageActivity: AppCompatActivity() {
                 messageIntent.putExtra("body",intent.getStringExtra("body"))
             }
 
-            
 
+
+        }
+
+        if(intent.getStringExtra("type").equals("MEETINGREQUEST",true)){
+            val scheduleMeetingButton = Button(this)
+            scheduleMeetingButton.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            scheduleMeetingButton.text = "Add meeting to calendar"
+            scheduleMeetingButton.setOnClickListener{
+                // TODO: Add to google calendar
+            }
         }
 
     }

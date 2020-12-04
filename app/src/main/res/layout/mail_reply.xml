@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,46 +9,81 @@
 
     <TextView
         android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:id="@+id/mailDate"
+        android:id="@+id/rspMailDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
         android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:id="@+id/mailFrom"
+        android:id="@+id/rspMailTo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <TextView
-        android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:id="@+id/mailType"
+
+    <Spinner
+        android:entries="@array/mailType"
+        android:id="@+id/rspMailType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
-        android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:id="@+id/mailSubject"
+
+        android:hint="Subject"
+        android:id="@+id/rspMailSubject"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:autofillHints="Subject" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/mailBody"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text=""
-        />
+        android:id="@+id/rspMailBody"
+
+        android:hint="Body"
+        android:inputType="text" />
     <Button
         android:id="@+id/sendButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/reply"
+        android:text="Send"
         />
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/delete_message"
+        android:text="cancel"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Replying to:"
+        />
+    <TextView
+        android:text=""
+
+        android:id="@+id/mailDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:text=""
+
+        android:id="@+id/mailFrom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:text=""
+
+        android:id="@+id/mailType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:text=""
+
+        android:id="@+id/mailSubject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mailBody"
+
+        android:text=""
         />
 
 

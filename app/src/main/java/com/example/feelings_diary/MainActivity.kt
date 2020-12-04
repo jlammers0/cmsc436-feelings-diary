@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
+
+
         if (mAuth!!.currentUser != null){
             var uid = mAuth!!.currentUser!!.uid
             FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:

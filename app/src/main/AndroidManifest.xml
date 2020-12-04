@@ -23,7 +23,7 @@
         <activity android:name="com.example.feelings_diary.TherapistHomeActivity"/>
         <activity android:name="com.example.feelings_diary.MailInboxActivity"/>
         <activity android:name="com.example.feelings_diary.MailMessageActivity"/>
-
+        <activity android:name="com.example.feelings_diary.MailReplyActivity"/>
     </application>
 
 </manifest>

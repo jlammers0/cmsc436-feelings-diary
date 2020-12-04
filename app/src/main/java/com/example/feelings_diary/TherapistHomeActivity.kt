@@ -94,7 +94,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                             var user: User? = null
                             for (data in snapshot.children){
                                 user = data.getValue(User::class.java)
-                                if (user!!.email == patientEmail && user!!.group == "patient"){
+                                if (user!!.email == patientEmail && user.group == "patient"){
                                     break
                                 }
                             }
@@ -104,8 +104,8 @@ class TherapistHomeActivity : AppCompatActivity() {
                             }else{
                                 patients.add(user)
                                 prospectivePatients.remove(user)
-                                mDatabase!!.reference!!.child("prospectivePatients").child(uid!!).child(user.uid).removeValue()
-                                mDatabase!!.reference!!.child("patients").child(uid!!).child(user.uid).setValue(user)
+                                mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user.uid).removeValue()
+                                mDatabase!!.reference.child("patients").child(uid!!).child(user.uid).setValue(user)
                             }
 
                         }
@@ -134,7 +134,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                                 Toast.makeText(applicationContext,"Requested patient was not found", Toast.LENGTH_LONG).show()
                             }else{
                                 prospectivePatients.remove(user)
-                                mDatabase!!.reference!!.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()
+                                mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()
                             }
 
                         }

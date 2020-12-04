@@ -77,7 +77,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         // RadioButtons report each click, even if the toggle state doesn't change
         if (rb.isChecked) {
-            userGroup = rb!!.text.toString()
+            userGroup = rb.text.toString()
             radioFlag = true
         }
     }
@@ -118,7 +118,7 @@ class RegistrationActivity : AppCompatActivity() {
                         if (user.group.equals("patient",true)) {
                             mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
-                                    Date(System.currentTimeMillis()),
+                                    Date(System.currentTimeMillis()).toString(),
                                     "Feelings Diary Team",
                                     email,
                                     MessageType.MESSAGE,
@@ -132,7 +132,7 @@ class RegistrationActivity : AppCompatActivity() {
                         }else if (user.group.equals("therapist",true)){
                             mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
-                                    Date(System.currentTimeMillis()),
+                                    Date(System.currentTimeMillis()).toString(),
                                     "Feelings Diary Team",
                                     email,
                                     MessageType.MESSAGE,

@@ -21,7 +21,7 @@ class MailMessage (private val context: Activity, private var mail: List<Message
 
 
         val message = mail[position]
-        mailDateView.text = message.date.toLocaleString()
+        mailDateView.text = message.date
         mailFromView.text = "From: " + message.from
         mailTypeView.text = "Type: " + message.messageType.toString()
         mailSubjectView.text = "Subject: " + message.subject
