@@ -20,13 +20,21 @@
         android:layout_gravity="center_horizontal"
         />
 
-
+    <EditText
+        android:id="@+id/findTherapistByEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:importantForAutofill="no" />
 
     <Button
         android:id="@+id/requestTherapistButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/send_patient_request_to_therapist" />
+
+
 
 
 

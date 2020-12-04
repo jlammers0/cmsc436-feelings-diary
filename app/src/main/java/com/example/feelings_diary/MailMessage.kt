@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
-class MailMessage (private val context: Activity, private var mail: List<Message>) : ArrayAdapter<Message>(context,R.layout.mail_view) {
+class MailMessage (private val context: Activity, private var mail: List<Message>) : ArrayAdapter<Message>(context,R.layout.mail_view, mail) {
 
     @SuppressLint("ViewHolder", "InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -21,10 +21,11 @@ class MailMessage (private val context: Activity, private var mail: List<Message
 
 
         val message = mail[position]
-        mailDateView.text = message.date.toString()
-        mailFromView.text = message.from
-        mailTypeView.text = message.messageType.toString()
-        mailSubjectView.text = message.subject
+        mailDateView.text = message.date.toLocaleString()
+        mailFromView.text = "From: " + message.from
+        mailTypeView.text = "Type: " + message.messageType.toString()
+        mailSubjectView.text = "Subject: " + message.subject
+
         return listViewItem
 
     }

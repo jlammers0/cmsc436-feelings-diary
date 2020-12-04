@@ -23,6 +23,7 @@ class PatientHomeActivity : AppCompatActivity() {
     private var logoutButton:ImageButton?=null
     private var mAuth: FirebaseAuth? = null
     private var mDatabase: FirebaseDatabase? = null
+    private var uid:String? = null
 
 
 
@@ -40,6 +41,7 @@ class PatientHomeActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance()
         patientAddTherapistButton = findViewById(R.id.patientAddTherapistButton)
+        uid = intent.getStringExtra(USER_ID)
 
         checkInButton!!.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(this)
@@ -64,6 +66,7 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
         mailButton!!.setOnClickListener{
+            startActivity(Intent(this@PatientHomeActivity,MailInboxActivity::class.java).putExtra(USER_ID,uid))
 
         }
 
@@ -73,6 +76,7 @@ class PatientHomeActivity : AppCompatActivity() {
 
     companion object{
         const val TAG = "feelings-diary-log"
+        const val USER_ID = "com.example.tesla.myhomelibrary.userid"
     }
 
 

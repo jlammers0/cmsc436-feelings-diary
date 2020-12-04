@@ -87,7 +87,7 @@ class RegistrationActivity : AppCompatActivity() {
 
                         //Welcome message and initializing inbox to test message system
                         if (user.group.equals("patient",true)) {
-                            mDatabaseReference!!.child("inbox").child(uid).setValue(
+                            mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
                                     Date(System.currentTimeMillis()),
                                     "Feelings Diary Creators",
@@ -101,7 +101,7 @@ class RegistrationActivity : AppCompatActivity() {
                                 )
                             )
                         }else if (user.group.equals("therapist",true)){
-                            mDatabaseReference!!.child("inbox").child(uid).setValue(
+                            mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
                                     Date(System.currentTimeMillis()),
                                     "Feelings Diary Creators",

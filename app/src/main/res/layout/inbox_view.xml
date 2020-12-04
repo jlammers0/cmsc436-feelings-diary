@@ -40,18 +40,11 @@
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/inboxView"
-        android:text="@string/tap_to_expand"
-        android:textAlignment="center" />
 
     <ListView
         android:id="@+id/listViewMail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1" />
+        android:layout_below="@id/inboxView" />
 
 </RelativeLayout>
