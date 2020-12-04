@@ -88,5 +88,6 @@ class MailMessageActivity: AppCompatActivity() {
     companion object{
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val TAG = "feelings-diary-log"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
     }
 }

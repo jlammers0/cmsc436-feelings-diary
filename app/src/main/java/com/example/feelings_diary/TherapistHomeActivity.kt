@@ -29,6 +29,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var databasePatients: DatabaseReference
     private lateinit var databaseProspectivePatients: DatabaseReference
     private var uid:String? = null
+    private var uemail:String? = null
     private lateinit var patients: MutableList<User>
     private lateinit var prospectivePatients: MutableList<User>
 
@@ -57,11 +58,17 @@ class TherapistHomeActivity : AppCompatActivity() {
         prospectivePatients = ArrayList()
 
         uid = intent.getStringExtra(USER_ID)
+        uemail = intent.getStringExtra(USER_EMAIL)
 
         logoutButton.setOnClickListener{
             mAuth!!.signOut()
             Toast.makeText(applicationContext,"You have been successfully logged out",Toast.LENGTH_LONG).show()
-            startActivity(Intent(this@TherapistHomeActivity,LoginActivity::class.java))
+            startActivity(Intent(this@TherapistHomeActivity,MainActivity::class.java))
+        }
+
+        mailButton.setOnClickListener{
+            startActivity(Intent(this@TherapistHomeActivity,MailInboxActivity::class.java).putExtra(USER_ID,uid).putExtra(
+                USER_EMAIL,uemail))
         }
 
         addPatientButton.setOnClickListener{
@@ -206,5 +213,6 @@ class TherapistHomeActivity : AppCompatActivity() {
     companion object{
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
     }
 }

@@ -51,6 +51,8 @@ class MailReplyActivity: AppCompatActivity() {
         mailTypeView!!.text = intent.getStringExtra("type")
         mailSubjectView!!.text = intent.getStringExtra("subject")
         mailBodyView!!.text = intent.getStringExtra("body")
+
+
     }
 
     fun getUserFromEmail(email:String): User? {
@@ -80,6 +82,7 @@ class MailReplyActivity: AppCompatActivity() {
 
     companion object{
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
         const val TAG = "feelings-diary-log"
     }
 }
