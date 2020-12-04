@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Feelings-Diary</string>
+    <string name="title_app_name">Feelings Diary</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="account_login">Feelings Diary Account Login</string>
+    <string name="register_new_account">Register new Feelings Diary account</string>
+    <string name="patient">Patient</string>
+    <string name="therapist">Therapist</string>
+    <string name="check_in">Check-In</string>
+    <string name="logout_icon">logout icon</string>
+    <string name="settings_icon">settings icon</string>
+    <string name="calendar_icon">calendar icon</string>
+    <string name="mail_icon">mail icon</string>
+    <string name="patient_list">Patient List</string>
+    <string name="view_check_ins">View Check-Ins</string>
+    <string name="message">Message</string>
+    <string name="schedule_appointment">Schedule Appointment</string>
+    <string name="query_patient_check_ins">Query Patient Check-Ins</string>
+    <string name="feelings_illustration">feelings illustration</string>
+    <string name="add_a_comment_to_this_check_in">Add a comment to this check in</string>
+    <string name="today_i_am_feeling">Today I am feeling:</string>
+    <string name="add_a_patient_please_enter_patient_email">Add a patient. Please enter patient email</string>
+    <string name="add_patient">Add Patient</string>
+    <string name="pending_patient_requests">Pending patient requests</string>
+    <string name="ignore_patient_request">Ignore Patient Request</string>
 </resources>

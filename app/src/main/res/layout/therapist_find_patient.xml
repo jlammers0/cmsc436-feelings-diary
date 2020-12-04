@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pending_patient_requests"/>
+    <ListView
+        android:id="@+id/prospectivePatientList"
+        android:layout_width="308dp"
+        android:layout_height="242dp"
+        android:layout_marginVertical="40dp"
+        android:background="#AEADAD"
+        android:layout_gravity="center_horizontal"
+         />
+
+    <Button
+        android:id="@+id/addPatientButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_patient" />
+    <Button
+        android:id="@+id/ignorePatientButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ignore_patient_request" />
+
+
+
+</LinearLayout>

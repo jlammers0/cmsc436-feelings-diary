@@ -23,7 +23,7 @@ class Validators {
         if (password.isNullOrEmpty())
             return false
 
-        val passRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,8}\$")
+        val passRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,16}\$")
 
         return passRegex.matches(password)
     }

@@ -2,31 +2,31 @@ package com.example.feelings_diary
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class LoginActivity : AppCompatActivity() {
-    private var mDatabaseReference: DatabaseReference? = null
     private var mDatabase: FirebaseDatabase? = null
     private var userEmail: EditText? = null
     private var userPassword: EditText? = null
     private var loginBtn: Button? = null
     private var progressBar: ProgressBar? = null
+    private var userGroup:String? = null
+
+
 
     private var mAuth: FirebaseAuth? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        Log.i(TAG,"Entered LoginActivity")
 
         mDatabase = FirebaseDatabase.getInstance()
-        mDatabaseReference = mDatabase!!.reference.child("Users")
         mAuth = FirebaseAuth.getInstance()
 
         userEmail = findViewById(R.id.email)
@@ -34,8 +34,48 @@ class LoginActivity : AppCompatActivity() {
         loginBtn = findViewById(R.id.login)
         progressBar = findViewById(R.id.progressBar)
 
+
+
+        if (!intent.getStringExtra("email").isNullOrEmpty()) {
+            userEmail!!.setText(intent.getStringExtra("email"))
+        }
+        if (!intent.getStringExtra("password").isNullOrEmpty()) {
+            userPassword!!.setText(intent.getStringExtra("password"))
+        }
+
+
+
         loginBtn!!.setOnClickListener { loginUserAccount() }
+
+        if (mAuth!!.currentUser != null){
+            val uid = mAuth!!.currentUser!!.uid
+            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener{
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.i(TAG,"this was executed")
+                    var user: User? = null
+                    user = snapshot.child(uid).getValue(User::class.java)
+                    userGroup = user!!.group
+                    if(userGroup.equals("therapist",true)){
+                        startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
+                            mAuth!!.currentUser!!.uid))
+                    }else if (userGroup.equals("patient",true)){
+                        startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
+                            mAuth!!.currentUser!!.uid))
+                    }else{
+                        Log.i(TAG,"User group did not match therapist or patient")
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(TAG,"loading user group canceled")
+                }
+            })
+        }
     }
+
+
 
     // TODO: Allow the user to log into their account
     // If the email and password are not empty, try to log in
@@ -56,12 +96,46 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
+
+        var flag = false
         mAuth!!.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
             progressBar!!.visibility = View.GONE
             if (task.isSuccessful){
                 Toast.makeText(applicationContext,"Login Successful",Toast.LENGTH_LONG).show()
-                startActivity(Intent(this@LoginActivity,DashboardActivity::class.java).putExtra(USER_ID,
-                    mAuth!!.currentUser!!.uid))
+                val uid = mAuth!!.currentUser!!.uid
+                Log.i(TAG,"uid = ${uid}")
+
+
+                    FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener{
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        Log.i(TAG,"this was executed")
+                        var user: User? = null
+                        user = snapshot.child(uid).getValue(User::class.java)
+                        userGroup = user!!.group
+                        if(userGroup.equals("therapist",true)){
+                            startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
+                                mAuth!!.currentUser!!.uid))
+                        }else if (userGroup.equals("patient",true)){
+                            startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
+                                mAuth!!.currentUser!!.uid))
+                        }else{
+                            Log.i(TAG,"User group did not match therapist or patient")
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.i(TAG,"loading user group canceled")
+                    }
+                })
+
+
+
+
+
+
+
             }else{
                 Toast.makeText(applicationContext,"Login Failed",Toast.LENGTH_LONG).show()
             }
@@ -72,5 +146,6 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
+        const val TAG = "feelings-diary-log"
     }
 }
