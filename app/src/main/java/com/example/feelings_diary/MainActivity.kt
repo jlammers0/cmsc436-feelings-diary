@@ -38,12 +38,12 @@ class MainActivity : AppCompatActivity() {
                     var userGroup = user!!.group
                     if(userGroup.equals("therapist",true)){
                         startActivity(Intent(this@MainActivity,TherapistHomeActivity::class.java).putExtra(
-                            LoginActivity.USER_ID,
-                            mAuth!!.currentUser!!.uid))
+                            USER_ID,
+                            mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
                     }else if (userGroup.equals("patient",true)){
                         startActivity(Intent(this@MainActivity,PatientHomeActivity::class.java).putExtra(
-                            LoginActivity.USER_ID,
-                            mAuth!!.currentUser!!.uid))
+                            USER_ID,
+                            mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
                     }else{
                         Log.i(LoginActivity.TAG,"User group did not match therapist or patient")
                     }
@@ -68,5 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
     companion object{
         const val TAG = "feelings-diary-log"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
+        const val USER_ID = "com.example.tesla.myhomelibrary.userid"
     }
 }

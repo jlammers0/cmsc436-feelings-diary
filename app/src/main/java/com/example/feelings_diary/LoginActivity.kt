@@ -115,10 +115,10 @@ class LoginActivity : AppCompatActivity() {
                         userGroup = user!!.group
                         if(userGroup.equals("therapist",true)){
                             startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
-                                mAuth!!.currentUser!!.uid))
+                                mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
                         }else if (userGroup.equals("patient",true)){
                             startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
-                                mAuth!!.currentUser!!.uid))
+                                mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
                         }else{
                             Log.i(TAG,"User group did not match therapist or patient")
                         }

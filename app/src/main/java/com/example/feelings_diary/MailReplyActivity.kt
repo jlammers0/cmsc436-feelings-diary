@@ -1,11 +1,16 @@
 package com.example.feelings_diary
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class MailReplyActivity: AppCompatActivity() {
 
@@ -46,6 +51,31 @@ class MailReplyActivity: AppCompatActivity() {
         mailTypeView!!.text = intent.getStringExtra("type")
         mailSubjectView!!.text = intent.getStringExtra("subject")
         mailBodyView!!.text = intent.getStringExtra("body")
+    }
+
+    fun getUserFromEmail(email:String): User? {
+        var user: User? = null
+
+        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                for (data in snapshot.children){
+                    val temp = data.getValue(User::class.java)
+                    if (user!!.email == email){
+                        user=temp
+                        break
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(TAG,"fetching users failed")
+            }
+
+        })
+
+        return user
     }
 
     companion object{

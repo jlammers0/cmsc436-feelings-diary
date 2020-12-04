@@ -15,10 +15,12 @@ class MailInboxActivity : AppCompatActivity(){
     private var autoCompleteView: AutoCompleteTextView? = null
     private var autoCompleteCriteriaSpinner: Spinner? = null
     private var searchButton: Button? = null
+    private var composeButton:Button? = null
     private var mailListView: ListView? = null
     private var messageList: MutableList<Message>? = null
     private var databaseInbox: DatabaseReference? = null
     private var uid: String? = null
+    private var uemail:String?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +36,8 @@ class MailInboxActivity : AppCompatActivity(){
         messageList = ArrayList()
         databaseInbox = FirebaseDatabase.getInstance().getReference("inbox")
         uid = intent.getStringExtra(USER_ID)
+        uemail = intent.getStringExtra(USER_EMAIL)
+        composeButton = findViewById(R.id.composeButton)
 
 
 
@@ -42,12 +46,17 @@ class MailInboxActivity : AppCompatActivity(){
 
             val messageIntent = Intent(this@MailInboxActivity,MailMessageActivity::class.java)
             messageIntent.putExtra(USER_ID,uid)
+            messageIntent.putExtra(USER_EMAIL,uemail)
             messageIntent.putExtra("date",message.date)
             messageIntent.putExtra("from",message.from)
             messageIntent.putExtra("type",message.messageType)
             messageIntent.putExtra("subject",message.subject)
             messageIntent.putExtra("body",message.body)
             startActivity(messageIntent)
+        }
+
+        composeButton!!.setOnClickListener {
+            startActivity(Intent(this@MailInboxActivity,NewMessageActivity::class.java).putExtra(USER_ID,uid).putExtra(USER_EMAIL,uemail))
         }
 
 
@@ -88,6 +97,7 @@ class MailInboxActivity : AppCompatActivity(){
     companion object{
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val TAG = "feelings-diary-log"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
     }
 
 
