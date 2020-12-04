@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Feelings-Diary</string>
+
+    <array name="searchCriteria">
+        <item name="date">Date</item>
+        <item name="from">From</item>
+        <item name="messageType">Message Type</item>
+        <item name="subject">Subject</item>
+        <item name="keyword">Keyword</item>
+    </array>
     <string name="title_app_name">Feelings Diary</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
@@ -26,4 +34,13 @@
     <string name="add_patient">Add Patient</string>
     <string name="pending_patient_requests">Pending patient requests</string>
     <string name="ignore_patient_request">Ignore Patient Request</string>
+    <string name="add_patient_icon">add patient icon</string>
+    <string name="patient_add_therapist_icon">patient add therapist icon</string>
+    <string name="send_patient_request_to_therapist">Send patient request to therapist</string>
+    <string name="currently_enrolled_therapists">Currently Enrolled Therapists</string>
+    <string name="cancel_check_in">Cancel Check-In</string>
+    <string name="save_check_in">Save Check-In</string>
+    <string name="search_by_selection">Search by selection</string>
+    <string name="inbox">Inbox</string>
+    <string name="tap_to_expand">Tap to Expand</string>
 </resources>
