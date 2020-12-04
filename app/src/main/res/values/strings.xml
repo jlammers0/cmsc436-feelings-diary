@@ -40,4 +40,7 @@
     <string name="currently_enrolled_therapists">Currently Enrolled Therapists</string>
     <string name="cancel_check_in">Cancel Check-In</string>
     <string name="save_check_in">Save Check-In</string>
+    <string name="search_by_selection">Search by selection</string>
+    <string name="inbox">Inbox</string>
+    <string name="tap_to_expand">Tap to Expand</string>
 </resources>

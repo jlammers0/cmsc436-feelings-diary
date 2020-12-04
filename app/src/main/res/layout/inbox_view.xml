@@ -17,26 +17,26 @@
         android:layout_height="wrap_content" />
 
     <Spinner
-        android:id="@+id/spinnerCountry"
+        android:id="@+id/autoCompleteCriteria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/autoCompleteView"
         android:entries="@array/searchCriteria" />
 
     <Button
-        android:id="@+id/buttonAddAuthor"
+        android:id="@+id/searchButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spinnerCountry"
-        android:text="Search by selection" />
+        android:layout_below="@id/autoCompleteCriteria"
+        android:text="@string/search_by_selection" />
 
     <TextView
         android:id="@+id/inboxView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonAddAuthor"
+        android:layout_below="@id/searchButton"
         android:padding="@dimen/activity_horizontal_margin"
-        android:text="Inbox"
+        android:text="@string/inbox"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/inboxView"
-        android:text="Tap to Expand"
+        android:text="@string/tap_to_expand"
         android:textAlignment="center" />
 
     <ListView
