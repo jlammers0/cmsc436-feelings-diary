@@ -97,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
 
-        var flag = false
+
         mAuth!!.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
             progressBar!!.visibility = View.GONE
             if (task.isSuccessful){
@@ -129,11 +129,6 @@ class LoginActivity : AppCompatActivity() {
                         Log.i(TAG,"loading user group canceled")
                     }
                 })
-
-
-
-
-
 
 
             }else{

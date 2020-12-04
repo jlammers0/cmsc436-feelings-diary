@@ -7,8 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import java.util.*
 
 class RegistrationActivity : AppCompatActivity() {
@@ -41,6 +40,36 @@ class RegistrationActivity : AppCompatActivity() {
 
 
         regBtn!!.setOnClickListener { registerNewUser() }
+
+        if (mAuth!!.currentUser != null){
+            val uid = mAuth!!.currentUser!!.uid
+            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
+                ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.i(LoginActivity.TAG,"this was executed")
+                    var user: User? = null
+                    user = snapshot.child(uid).getValue(User::class.java)
+                    userGroup = user!!.group
+                    if(userGroup.equals("therapist",true)){
+                        startActivity(Intent(this@RegistrationActivity,TherapistHomeActivity::class.java).putExtra(
+                            LoginActivity.USER_ID,
+                            mAuth!!.currentUser!!.uid))
+                    }else if (userGroup.equals("patient",true)){
+                        startActivity(Intent(this@RegistrationActivity,PatientHomeActivity::class.java).putExtra(
+                            LoginActivity.USER_ID,
+                            mAuth!!.currentUser!!.uid))
+                    }else{
+                        Log.i(LoginActivity.TAG,"User group did not match therapist or patient")
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(LoginActivity.TAG,"loading user group canceled")
+                }
+            })
+        }
     }
 
     fun registrationRadioClickCallback(v: View) {
@@ -90,7 +119,7 @@ class RegistrationActivity : AppCompatActivity() {
                             mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
                                     Date(System.currentTimeMillis()),
-                                    "Feelings Diary Creators",
+                                    "Feelings Diary Team",
                                     email,
                                     MessageType.MESSAGE,
                                     "Welcome to Feelings Diary!",
@@ -104,7 +133,7 @@ class RegistrationActivity : AppCompatActivity() {
                             mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
                                     Date(System.currentTimeMillis()),
-                                    "Feelings Diary Creators",
+                                    "Feelings Diary Team",
                                     email,
                                     MessageType.MESSAGE,
                                     "Welcome to Feelings Diary!",
