@@ -39,6 +39,12 @@ class MailInboxActivity : AppCompatActivity(){
         uemail = intent.getStringExtra(USER_EMAIL)
         composeButton = findViewById(R.id.composeButton)
 
+        //TODO: autoCompleteView needs an adapter to work. use autocompleteview and spinner to query mail
+
+        searchButton!!.setOnClickListener {
+            //TODO: needs autocompleteview and spinner. will launch a query and regenerate the listview
+        }
+
 
 
         mailListView!!.onItemClickListener = AdapterView.OnItemClickListener{ _, _, i, _ ->

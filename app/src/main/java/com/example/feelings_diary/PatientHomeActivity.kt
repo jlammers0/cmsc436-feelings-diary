@@ -50,7 +50,24 @@ class PatientHomeActivity : AppCompatActivity() {
             val inflater = layoutInflater
             val dialogView = inflater.inflate(R.layout.patient_check_in,null)
             dialogBuilder.setView(dialogView)
+            //TODO: patient_check_in is a template. Check in still needs more work
+            //needs extra faces, attach slider to faces with corresponding ints
+            //firebase node "diary" to be added to store patient check ins
 
+        }
+
+        //TODO: calendarView
+        //get selected date and create a list of check-ins on that date
+        //this view has not been created yet. dialog or activity with a listview similar
+        //to patientList or messages will do
+
+        settingsButton!!.setOnClickListener{
+            //TODO: create reminders to check in and option to delete account
+            //patient settings will no longer add therapist we have add therapist button for this
+        }
+
+        calendarButton!!.setOnClickListener{
+            //TODO: link to android calendar https://itnext.io/android-calendar-intent-8536232ecb38
         }
 
 
@@ -65,6 +82,8 @@ class PatientHomeActivity : AppCompatActivity() {
             val inflater = layoutInflater
             val dialogView = inflater.inflate(R.layout.patient_find_therapist,null)
             dialogBuilder.setView(dialogView)
+
+            //TODO: build therapist list and add node to firebase connecting patients and therapists
         }
 
         mailButton!!.setOnClickListener{

@@ -27,8 +27,7 @@ class Validators {
         return emailRegex.matches(email)
     }
 
-    // TODO: Validate password
-    // Passwords should be at least 4 characters with 1 letter and 1 number
+
     fun validPassword(password: String?) : Boolean {
         if (password.isNullOrEmpty())
             return false
@@ -37,6 +36,7 @@ class Validators {
 
         return passRegex.matches(password)
     }
+
 
     fun validUsername(username:String?,unameList:MutableList<String>):Boolean{
 

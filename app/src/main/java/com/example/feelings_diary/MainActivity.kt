@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        // TODO: This is to make testing easier remove this
+        // TODO: This is to make testing easier remove this in actual app
         mAuth!!.signOut()
 
 

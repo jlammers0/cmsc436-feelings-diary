@@ -60,6 +60,32 @@ class TherapistHomeActivity : AppCompatActivity() {
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
 
+        //TODO: patientList made into listView. Onclick will only select patients and allow other buttons to act on selected patient
+
+        checkInButton.setOnClickListener{
+            //TODO: view list of this patients most recent checkins. listview
+            //requires patient to be selected from patient list
+        }
+
+        messageButton.setOnClickListener{
+            //TODO: use the messenger. use intents to feed in the patient and allow therapist to full subject and body. messageType=message
+            //requires patient to be selected from patient list
+        }
+
+        aptButton.setOnClickListener{
+            //TODO: use the messenger. use intents to feed patient. messsageType=MEETINGREQUEST. use a subject and body template
+            //requires patient to be selected from patient list
+        }
+
+        queryButton.setOnClickListener{
+            //TODO: allow therapist to query all their patient check-ins. will interact with firebase to find check in data
+            //need to create activity for this. should have spinner to query by different criteria
+            //feeling range will be an integer matching patient check in slider values
+            //keyword will search through diary entry object comments
+            //query by patient not necessary as this ability is already allowed in the therapist home screen
+            //this will not require a patient to be selected from patient list
+        }
+
         logoutButton.setOnClickListener{
             mAuth!!.signOut()
             Toast.makeText(applicationContext,"You have been successfully logged out",Toast.LENGTH_LONG).show()
@@ -72,6 +98,7 @@ class TherapistHomeActivity : AppCompatActivity() {
         }
 
         addPatientButton.setOnClickListener{
+            //TODO: This code isn't finished yet. I forget where i left off
             var patientEmail: String? = null
 
             val dialogBuilder = AlertDialog.Builder(this)
@@ -156,6 +183,8 @@ class TherapistHomeActivity : AppCompatActivity() {
 
 
         }
+
+
         
     }
 

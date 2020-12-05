@@ -52,7 +52,7 @@ class MailReplyActivity: AppCompatActivity() {
         mailSubjectView!!.text = intent.getStringExtra("subject")
         mailBodyView!!.text = intent.getStringExtra("body")
 
-
+        //TODO: Still needs to be finished. exact same as compose mail but has the old message underneath
     }
 
     fun getUserFromEmail(email:String): User? {

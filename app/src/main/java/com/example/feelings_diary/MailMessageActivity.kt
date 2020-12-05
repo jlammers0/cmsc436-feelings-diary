@@ -79,7 +79,7 @@ class MailMessageActivity: AppCompatActivity() {
             scheduleMeetingButton.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
             scheduleMeetingButton.text = "Add meeting to calendar"
             scheduleMeetingButton.setOnClickListener{
-                // TODO: Add to google calendar
+                // TODO: Add to google calendar https://itnext.io/android-calendar-intent-8536232ecb38
             }
         }
 
