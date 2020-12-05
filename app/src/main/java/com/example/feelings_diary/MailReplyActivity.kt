@@ -1,16 +1,15 @@
 package com.example.feelings_diary
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.util.*
 
 class MailReplyActivity: AppCompatActivity() {
 
@@ -27,6 +26,9 @@ class MailReplyActivity: AppCompatActivity() {
     private var mailTypeView: TextView? = null
     private var mailSubjectView: TextView? = null
     private var mailBodyView: TextView? = null
+
+    private var uid:String? = null
+    private var uemail:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -52,7 +54,44 @@ class MailReplyActivity: AppCompatActivity() {
         mailSubjectView!!.text = intent.getStringExtra("subject")
         mailBodyView!!.text = intent.getStringExtra("body")
 
-        //TODO: Still needs to be finished. exact same as compose mail but has the old message underneath
+        uid = intent.getStringExtra(USER_ID)
+        uemail = intent.getStringExtra(USER_EMAIL)
+
+        rspMailToView!!.text = intent.getStringExtra("from")
+        rspMailDateView!!.text = Date(System.currentTimeMillis()).toString()
+        rspMailSubjectView!!.setText("RE:" + mailSubjectView!!.text.toString())
+
+        sendButton!!.setOnClickListener{
+            var type = MessageType.MESSAGE
+            if(rspMailTypeView!!.selectedItem.toString().equals(MessageType.MESSAGE.toString(),true)){
+                type = MessageType.MESSAGE
+            }else if (rspMailTypeView!!.selectedItem.toString().equals(MessageType.MEETINGREQUEST.toString(),true)){
+                type = MessageType.MEETINGREQUEST
+            }else{
+                Log.i(NewMessageActivity.TAG,"Spinner selected message type didn't match either type")
+            }
+
+            val toUser = getUserFromEmail(rspMailToView!!.text.toString())
+
+
+
+            val message = Message(rspMailDateView!!.text.toString(),uemail!!,rspMailToView!!.text.toString(),type,rspMailSubjectView!!.text.toString(),rspMailBodyView!!.text.toString())
+            FirebaseDatabase.getInstance().reference.child("inbox").child(toUser!!.uid).child(rspMailDateView!!.text.toString()).setValue(message)
+            Toast.makeText(applicationContext,"Message has been sent", Toast.LENGTH_SHORT).show()
+            startActivity(
+                Intent(this@MailReplyActivity,MailInboxActivity::class.java).putExtra(
+                    NewMessageActivity.USER_ID,uid).putExtra(NewMessageActivity.USER_EMAIL,uemail))
+        }
+        cancelButton!!.setOnClickListener{
+            Toast.makeText(applicationContext,"Message was not sent", Toast.LENGTH_SHORT).show()
+            startActivity(
+                Intent(this@MailReplyActivity,MailInboxActivity::class.java).putExtra(
+                    NewMessageActivity.USER_ID,uid).putExtra(NewMessageActivity.USER_EMAIL,uemail))
+
+        }
+
+
+
     }
 
     fun getUserFromEmail(email:String): User? {
