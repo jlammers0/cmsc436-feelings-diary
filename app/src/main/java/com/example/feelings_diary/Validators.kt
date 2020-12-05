@@ -1,6 +1,16 @@
 package com.example.feelings_diary
 
+import android.content.Intent
+import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+
+
 class Validators {
+
+
     fun validEmail(email: String?) : Boolean {
         if (email.isNullOrEmpty()) {
             return false
@@ -26,5 +36,22 @@ class Validators {
         val passRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,16}\$")
 
         return passRegex.matches(password)
+    }
+
+    fun validUsername(username:String?,unameList:MutableList<String>):Boolean{
+
+        if(username.isNullOrEmpty()) {
+            return false
+        }else if (username.length in 4..16){
+                for (name: String? in unameList!!) {
+                    if (name.equals(username, true)) {
+                        return false
+                    }
+                }
+                return true
+        }
+
+
+        return false
     }
 }

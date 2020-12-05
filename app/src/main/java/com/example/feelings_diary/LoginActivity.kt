@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-        if (!intent.getStringExtra("email").isNullOrEmpty()) {
+        if (!intent.getStringExtra(USER_EMAIL).isNullOrEmpty()) {
             userEmail!!.setText(intent.getStringExtra("email"))
         }
         if (!intent.getStringExtra("password").isNullOrEmpty()) {

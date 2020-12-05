@@ -14,6 +14,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     private var emailTV: EditText? = null
     private var passwordTV: EditText? = null
+    private var usernameTV: EditText? = null
     private var regBtn: Button? = null
     private var progressBar: ProgressBar? = null
     private var validator = Validators()
@@ -21,6 +22,7 @@ class RegistrationActivity : AppCompatActivity() {
     private var radioFlag = false
     private var mDatabaseReference: DatabaseReference? = null
     private var mDatabase: FirebaseDatabase? = null
+    private var unameList:MutableList<String>? = null
 
     private var mAuth: FirebaseAuth? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,10 +35,12 @@ class RegistrationActivity : AppCompatActivity() {
 
         emailTV = findViewById(R.id.email)
         passwordTV = findViewById(R.id.password)
+        usernameTV = findViewById(R.id.username)
         regBtn = findViewById(R.id.register)
         progressBar = findViewById(R.id.progressBar)
         mDatabase = FirebaseDatabase.getInstance()
         mDatabaseReference = mDatabase!!.reference
+        unameList = ArrayList()
 
 
         regBtn!!.setOnClickListener { registerNewUser() }
@@ -47,7 +51,7 @@ class RegistrationActivity : AppCompatActivity() {
                 ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.i(LoginActivity.TAG,"this was executed")
+
                     var user: User? = null
                     user = snapshot.child(uid).getValue(User::class.java)
                     userGroup = user!!.group
@@ -87,6 +91,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         val email: String = emailTV!!.text.toString()
         val password: String = passwordTV!!.text.toString()
+        val username: String = usernameTV!!.text.toString()
 
         if (!validator.validEmail(email)) {
             Toast.makeText(applicationContext, "Please enter a valid email...", Toast.LENGTH_LONG).show()
@@ -96,6 +101,15 @@ class RegistrationActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Password must be between 6 and 16 characters and contain at least 1 letter and 1 number", Toast.LENGTH_LONG).show()
             return
         }
+        if (!validator.validUsername(username,unameList!!)&&username.length in 4..16){
+            Toast.makeText(applicationContext,"This username has already been taken",Toast.LENGTH_LONG).show()
+            return
+        }else if (!validator.validUsername(username,unameList!!)){
+            Toast.makeText(applicationContext, "Username must be between 4 and 16 characters and must be unique",Toast.LENGTH_LONG).show()
+            return
+
+        }
+
         if(!radioFlag){
             Toast.makeText(applicationContext,"Please identify as either a patient or therapist",Toast.LENGTH_LONG).show()
             return
@@ -111,7 +125,7 @@ class RegistrationActivity : AppCompatActivity() {
                         progressBar!!.visibility = View.GONE
                         val uid = mAuth!!.currentUser!!.uid
                         Log.i(TAG,"Uid = ${uid}")
-                        val user = User(email,uid,userGroup!!)
+                        val user = User(username,email,uid,userGroup!!)
                         mDatabaseReference!!.child("users").child(uid).setValue(user)
 
                         //Welcome message and initializing inbox to test message system
@@ -147,14 +161,45 @@ class RegistrationActivity : AppCompatActivity() {
 
 
                         val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
-                        intent.putExtra("email",email)
+                        intent.putExtra(USER_EMAIL,email)
                         intent.putExtra("password",password)
+
                         startActivity(intent)
                     } else {
                         Toast.makeText(applicationContext, "Registration failed! Please try again later", Toast.LENGTH_LONG).show()
                         progressBar!!.visibility = View.GONE
                     }
                 }
+    }
+    override fun onStart(){
+        super.onStart()
+
+        FirebaseDatabase.getInstance().getReference("users")
+            .addListenerForSingleValueEvent(object :
+                ValueEventListener {
+
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (data in snapshot.children) {
+                        var user: User? = null
+                        try {
+                            user = data.getValue(User::class.java)
+                        } catch (e: Exception) {
+                            Log.e(MailInboxActivity.TAG, e.toString())
+                        } finally {
+                            unameList!!.add(user!!.uname)
+                        }
+                    }
+
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(LoginActivity.TAG, "loading user group canceled")
+                }
+            })
+
+
     }
     companion object{
         const val TAG = "feelings-diary-log"
