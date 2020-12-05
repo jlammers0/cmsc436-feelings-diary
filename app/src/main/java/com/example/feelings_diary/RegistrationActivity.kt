@@ -7,14 +7,14 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import java.util.*
 
 class RegistrationActivity : AppCompatActivity() {
 
     private var emailTV: EditText? = null
     private var passwordTV: EditText? = null
+    private var usernameTV: EditText? = null
     private var regBtn: Button? = null
     private var progressBar: ProgressBar? = null
     private var validator = Validators()
@@ -22,6 +22,7 @@ class RegistrationActivity : AppCompatActivity() {
     private var radioFlag = false
     private var mDatabaseReference: DatabaseReference? = null
     private var mDatabase: FirebaseDatabase? = null
+    private var unameList:MutableList<String>? = null
 
     private var mAuth: FirebaseAuth? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +35,45 @@ class RegistrationActivity : AppCompatActivity() {
 
         emailTV = findViewById(R.id.email)
         passwordTV = findViewById(R.id.password)
+        usernameTV = findViewById(R.id.username)
         regBtn = findViewById(R.id.register)
         progressBar = findViewById(R.id.progressBar)
         mDatabase = FirebaseDatabase.getInstance()
         mDatabaseReference = mDatabase!!.reference
+        unameList = ArrayList()
 
 
         regBtn!!.setOnClickListener { registerNewUser() }
+
+        if (mAuth!!.currentUser != null){
+            val uid = mAuth!!.currentUser!!.uid
+            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
+                ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    var user: User? = null
+                    user = snapshot.child(uid).getValue(User::class.java)
+                    userGroup = user!!.group
+                    if(userGroup.equals("therapist",true)){
+                        startActivity(Intent(this@RegistrationActivity,TherapistHomeActivity::class.java).putExtra(
+                            LoginActivity.USER_ID,
+                            mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
+                    }else if (userGroup.equals("patient",true)){
+                        startActivity(Intent(this@RegistrationActivity,PatientHomeActivity::class.java).putExtra(
+                            LoginActivity.USER_ID,
+                            mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
+                    }else{
+                        Log.i(LoginActivity.TAG,"User group did not match therapist or patient")
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(LoginActivity.TAG,"loading user group canceled")
+                }
+            })
+        }
     }
 
     fun registrationRadioClickCallback(v: View) {
@@ -48,7 +81,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         // RadioButtons report each click, even if the toggle state doesn't change
         if (rb.isChecked) {
-            userGroup = rb!!.text.toString()
+            userGroup = rb.text.toString()
             radioFlag = true
         }
     }
@@ -58,6 +91,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         val email: String = emailTV!!.text.toString()
         val password: String = passwordTV!!.text.toString()
+        val username: String = usernameTV!!.text.toString()
 
         if (!validator.validEmail(email)) {
             Toast.makeText(applicationContext, "Please enter a valid email...", Toast.LENGTH_LONG).show()
@@ -67,6 +101,15 @@ class RegistrationActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Password must be between 6 and 16 characters and contain at least 1 letter and 1 number", Toast.LENGTH_LONG).show()
             return
         }
+        if (!validator.validUsername(username,unameList!!)&&username.length in 4..16){
+            Toast.makeText(applicationContext,"This username has already been taken",Toast.LENGTH_LONG).show()
+            return
+        }else if (!validator.validUsername(username,unameList!!)){
+            Toast.makeText(applicationContext, "Username must be between 4 and 16 characters and must be unique",Toast.LENGTH_LONG).show()
+            return
+
+        }
+
         if(!radioFlag){
             Toast.makeText(applicationContext,"Please identify as either a patient or therapist",Toast.LENGTH_LONG).show()
             return
@@ -82,15 +125,15 @@ class RegistrationActivity : AppCompatActivity() {
                         progressBar!!.visibility = View.GONE
                         val uid = mAuth!!.currentUser!!.uid
                         Log.i(TAG,"Uid = ${uid}")
-                        val user = User(email,uid,userGroup!!)
+                        val user = User(username,email,uid,userGroup!!)
                         mDatabaseReference!!.child("users").child(uid).setValue(user)
 
                         //Welcome message and initializing inbox to test message system
                         if (user.group.equals("patient",true)) {
-                            mDatabaseReference!!.child("inbox").child(uid).setValue(
+                            mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
-                                    Date(System.currentTimeMillis()),
-                                    "Feelings Diary Creators",
+                                    Date(System.currentTimeMillis()).toString(),
+                                    "Feelings Diary Team",
                                     email,
                                     MessageType.MESSAGE,
                                     "Welcome to Feelings Diary!",
@@ -101,10 +144,10 @@ class RegistrationActivity : AppCompatActivity() {
                                 )
                             )
                         }else if (user.group.equals("therapist",true)){
-                            mDatabaseReference!!.child("inbox").child(uid).setValue(
+                            mDatabaseReference!!.child("inbox").child(uid).child(Date(System.currentTimeMillis()).toString()).setValue(
                                 Message(
-                                    Date(System.currentTimeMillis()),
-                                    "Feelings Diary Creators",
+                                    Date(System.currentTimeMillis()).toString(),
+                                    "Feelings Diary Team",
                                     email,
                                     MessageType.MESSAGE,
                                     "Welcome to Feelings Diary!",
@@ -118,8 +161,9 @@ class RegistrationActivity : AppCompatActivity() {
 
 
                         val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
-                        intent.putExtra("email",email)
+                        intent.putExtra(USER_EMAIL,email)
                         intent.putExtra("password",password)
+
                         startActivity(intent)
                     } else {
                         Toast.makeText(applicationContext, "Registration failed! Please try again later", Toast.LENGTH_LONG).show()
@@ -127,8 +171,40 @@ class RegistrationActivity : AppCompatActivity() {
                     }
                 }
     }
+    override fun onStart(){
+        super.onStart()
+
+        FirebaseDatabase.getInstance().getReference("users")
+            .addListenerForSingleValueEvent(object :
+                ValueEventListener {
+
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (data in snapshot.children) {
+                        var user: User? = null
+                        try {
+                            user = data.getValue(User::class.java)
+                        } catch (e: Exception) {
+                            Log.e(MailInboxActivity.TAG, e.toString())
+                        } finally {
+                            unameList!!.add(user!!.uname)
+                        }
+                    }
+
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(LoginActivity.TAG, "loading user group canceled")
+                }
+            })
+
+
+    }
     companion object{
         const val TAG = "feelings-diary-log"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
+        const val USER_ID = "com.example.tesla.myhomelibrary.userid"
     }
 
 }

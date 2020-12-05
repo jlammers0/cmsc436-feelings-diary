@@ -5,25 +5,25 @@
 
     <TextView
         android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
         android:id="@+id/mailDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
         android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
         android:id="@+id/mailFrom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
         android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
         android:id="@+id/mailType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
         android:text=""
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
         android:id="@+id/mailSubject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

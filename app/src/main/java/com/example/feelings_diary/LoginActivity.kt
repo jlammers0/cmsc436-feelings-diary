@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-        if (!intent.getStringExtra("email").isNullOrEmpty()) {
+        if (!intent.getStringExtra(USER_EMAIL).isNullOrEmpty()) {
             userEmail!!.setText(intent.getStringExtra("email"))
         }
         if (!intent.getStringExtra("password").isNullOrEmpty()) {
@@ -97,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
 
-        var flag = false
+
         mAuth!!.signInWithEmailAndPassword(email,password).addOnCompleteListener{task ->
             progressBar!!.visibility = View.GONE
             if (task.isSuccessful){
@@ -115,10 +115,10 @@ class LoginActivity : AppCompatActivity() {
                         userGroup = user!!.group
                         if(userGroup.equals("therapist",true)){
                             startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
-                                mAuth!!.currentUser!!.uid))
+                                mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
                         }else if (userGroup.equals("patient",true)){
                             startActivity(Intent(this@LoginActivity,PatientHomeActivity::class.java).putExtra(USER_ID,
-                                mAuth!!.currentUser!!.uid))
+                                mAuth!!.currentUser!!.uid).putExtra(USER_EMAIL,mAuth!!.currentUser!!.email))
                         }else{
                             Log.i(TAG,"User group did not match therapist or patient")
                         }
@@ -129,11 +129,6 @@ class LoginActivity : AppCompatActivity() {
                         Log.i(TAG,"loading user group canceled")
                     }
                 })
-
-
-
-
-
 
 
             }else{

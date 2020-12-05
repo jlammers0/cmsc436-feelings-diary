@@ -8,6 +8,10 @@
         <item name="subject">Subject</item>
         <item name="keyword">Keyword</item>
     </array>
+    <array name="mailType">
+        <item name="MESSAGE">Message</item>
+        <item name="REQUEST">Meeting Request</item>
+    </array>
     <string name="title_app_name">Feelings Diary</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
@@ -43,4 +47,6 @@
     <string name="search_by_selection">Search by selection</string>
     <string name="inbox">Inbox</string>
     <string name="tap_to_expand">Tap to Expand</string>
+    <string name="reply">Reply</string>
+    <string name="delete_message">Delete Message</string>
 </resources>

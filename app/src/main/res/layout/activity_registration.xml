@@ -18,6 +18,14 @@
         android:text="@string/register_new_account" />
 
     <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/username"
+        android:hint="Username"
+        android:inputType="text"
+        android:importantForAutofill="no"/>
+
+    <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

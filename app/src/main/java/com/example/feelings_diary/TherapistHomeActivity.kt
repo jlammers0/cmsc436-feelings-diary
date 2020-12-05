@@ -29,6 +29,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var databasePatients: DatabaseReference
     private lateinit var databaseProspectivePatients: DatabaseReference
     private var uid:String? = null
+    private var uemail:String? = null
     private lateinit var patients: MutableList<User>
     private lateinit var prospectivePatients: MutableList<User>
 
@@ -57,14 +58,47 @@ class TherapistHomeActivity : AppCompatActivity() {
         prospectivePatients = ArrayList()
 
         uid = intent.getStringExtra(USER_ID)
+        uemail = intent.getStringExtra(USER_EMAIL)
+
+        //TODO: patientList made into listView. Onclick will only select patients and allow other buttons to act on selected patient
+
+        checkInButton.setOnClickListener{
+            //TODO: view list of this patients most recent checkins. listview
+            //requires patient to be selected from patient list
+        }
+
+        messageButton.setOnClickListener{
+            //TODO: use the messenger. use intents to feed in the patient and allow therapist to full subject and body. messageType=message
+            //requires patient to be selected from patient list
+        }
+
+        aptButton.setOnClickListener{
+            //TODO: use the messenger. use intents to feed patient. messsageType=MEETINGREQUEST. use a subject and body template
+            //requires patient to be selected from patient list
+        }
+
+        queryButton.setOnClickListener{
+            //TODO: allow therapist to query all their patient check-ins. will interact with firebase to find check in data
+            //need to create activity for this. should have spinner to query by different criteria
+            //feeling range will be an integer matching patient check in slider values
+            //keyword will search through diary entry object comments
+            //query by patient not necessary as this ability is already allowed in the therapist home screen
+            //this will not require a patient to be selected from patient list
+        }
 
         logoutButton.setOnClickListener{
             mAuth!!.signOut()
             Toast.makeText(applicationContext,"You have been successfully logged out",Toast.LENGTH_LONG).show()
-            startActivity(Intent(this@TherapistHomeActivity,LoginActivity::class.java))
+            startActivity(Intent(this@TherapistHomeActivity,MainActivity::class.java))
+        }
+
+        mailButton.setOnClickListener{
+            startActivity(Intent(this@TherapistHomeActivity,MailInboxActivity::class.java).putExtra(USER_ID,uid).putExtra(
+                USER_EMAIL,uemail))
         }
 
         addPatientButton.setOnClickListener{
+            //TODO: This code isn't finished yet. I forget where i left off
             var patientEmail: String? = null
 
             val dialogBuilder = AlertDialog.Builder(this)
@@ -94,7 +128,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                             var user: User? = null
                             for (data in snapshot.children){
                                 user = data.getValue(User::class.java)
-                                if (user!!.email == patientEmail && user!!.group == "patient"){
+                                if (user!!.email == patientEmail && user.group == "patient"){
                                     break
                                 }
                             }
@@ -104,8 +138,8 @@ class TherapistHomeActivity : AppCompatActivity() {
                             }else{
                                 patients.add(user)
                                 prospectivePatients.remove(user)
-                                mDatabase!!.reference!!.child("prospectivePatients").child(uid!!).child(user.uid).removeValue()
-                                mDatabase!!.reference!!.child("patients").child(uid!!).child(user.uid).setValue(user)
+                                mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user.uid).removeValue()
+                                mDatabase!!.reference.child("patients").child(uid!!).child(user.uid).setValue(user)
                             }
 
                         }
@@ -134,7 +168,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                                 Toast.makeText(applicationContext,"Requested patient was not found", Toast.LENGTH_LONG).show()
                             }else{
                                 prospectivePatients.remove(user)
-                                mDatabase!!.reference!!.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()
+                                mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()
                             }
 
                         }
@@ -149,6 +183,8 @@ class TherapistHomeActivity : AppCompatActivity() {
 
 
         }
+
+
         
     }
 
@@ -206,5 +242,6 @@ class TherapistHomeActivity : AppCompatActivity() {
     companion object{
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
+        const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
     }
 }
