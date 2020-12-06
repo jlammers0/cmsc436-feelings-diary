@@ -12,22 +12,35 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.feelings_diary.LoginActivity"/>
-        <activity android:name="com.example.feelings_diary.RegistrationActivity"/>
-        <activity android:name="com.example.feelings_diary.PatientHomeActivity"/>
-        <activity android:name="com.example.feelings_diary.TherapistHomeActivity"/>
-        <activity android:name="com.example.feelings_diary.MailInboxActivity"/>
-        <activity android:name="com.example.feelings_diary.MailMessageActivity"/>
-        <activity android:name="com.example.feelings_diary.MailReplyActivity"/>
-        <activity android:name="com.example.feelings_diary.NewMessageActivity"/>
-        <activity android:name="com.example.feelings_diary.CheckInActivity"/>
+        <activity android:name="com.example.feelings_diary.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.RegistrationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.PatientHomeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.TherapistHomeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.MailInboxActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.MailMessageActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.MailReplyActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.NewMessageActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.CheckInActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

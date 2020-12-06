@@ -58,25 +58,7 @@ class PatientHomeActivity : AppCompatActivity() {
         patientAddTherapistButton = findViewById(R.id.patientAddTherapistButton)
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
-        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
-            ValueEventListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                for (data in snapshot.children){
-                    val temp = data.getValue(User::class.java)
-                    if (temp!!.email == uemail!!){
-                        curUser=temp
-                        break
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.i(TAG,"fetching users failed")
-            }
-
-        })
 
 
         therapistList = ArrayList()
@@ -224,6 +206,26 @@ class PatientHomeActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
+            ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                for (data in snapshot.children){
+                    val temp = data.getValue(User::class.java)
+                    if (temp!!.email == uemail!!){
+                        curUser=temp
+
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(TAG,"fetching users failed")
+            }
+
+        })
         databaseTherapists!!.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 therapistList!!.clear()
