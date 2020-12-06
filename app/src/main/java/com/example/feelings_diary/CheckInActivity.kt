@@ -70,7 +70,7 @@ class CheckInActivity: AppCompatActivity() {
 
         saveButton!!.setOnClickListener{
             val entry = DiaryEntry(Date(System.currentTimeMillis()).toString(), mSeekBar.progress, mFeelText?.text.toString())
-           
+
         }
     }
     companion object{
