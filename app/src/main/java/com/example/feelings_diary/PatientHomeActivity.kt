@@ -106,6 +106,15 @@ class PatientHomeActivity : AppCompatActivity() {
             b.show()
             Log.i(TAG,"DialogBuilder should be showing")
 
+            // Get therapist list
+            val therapistListView = dialogView.findViewById<ListView>(R.id.patientTherapistList)
+
+            // Initialize adapter
+            therapistAdapter = ProspectiveTherapistList(this,
+                therapistList as ArrayList<User>
+            )
+            therapistListView.adapter = therapistAdapter
+
             // Onclick for delete user button
             deleteButton.setOnClickListener {
                 // Get current user
@@ -116,21 +125,31 @@ class PatientHomeActivity : AppCompatActivity() {
                     currentUser!!.delete()
 
                     // Notify user that account has been deleted
-                    Toast.makeText(this, "You have successfully deleted your account.", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "You have successfully deleted your account.", Toast.LENGTH_LONG).show()
 
                     // Go back to main activity
                     startActivity(Intent(this, MainActivity::class.java))
                 } catch (e: Exception) {
                     // Notify user that account couldn't be deleted
-                    Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_LONG).show()
                 }
                 b.dismiss()
             }
 
             // Onclick for remove therapist button
             removeTherapistButton.setOnClickListener {
+
                 // TODO Figure out a way to remove a therapist from this patient's list
                 // Maybe have a therapist ListView in this fragment??
+
+
+                if (therapistListView.selectedItem != null) {
+                    (therapistList as ArrayList<User>).remove(therapistListView.selectedItem)
+                    (therapistListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                } else {
+                    // Notify user to make a selection
+                    Toast.makeText(this, "No therapist selected!", Toast.LENGTH_LONG).show()
+                }
                 b.dismiss()
             }
 
