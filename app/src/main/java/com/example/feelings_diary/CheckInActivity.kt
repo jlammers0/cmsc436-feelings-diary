@@ -44,7 +44,7 @@ class CheckInActivity: AppCompatActivity() {
         saveButton = findViewById(R.id.completeCheckinButton)
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance()
-
+        mDatabaseReference = mDatabase!!.reference
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
 
@@ -69,8 +69,17 @@ class CheckInActivity: AppCompatActivity() {
         }
 
         saveButton!!.setOnClickListener{
-            val entry = DiaryEntry(Date(System.currentTimeMillis()).toString(), mSeekBar.progress, mFeelText?.text.toString())
+            val d = Date(System.currentTimeMillis())
+            val entry = DiaryEntry(d.toString(), mSeekBar.progress, mFeelText?.text.toString())
+            mDatabaseReference!!.child("diary").child("uid").child(d.toString()).setValue(entry)
+            Toast.makeText(applicationContext, "Check in saved. Your therapist will review your check in shortly",
+                Toast.LENGTH_LONG).show()
 
+            startActivity(
+                Intent(this@CheckInActivity, PatientHomeActivity::class.java).putExtra(
+                    USER_ID, uid).putExtra(
+                    USER_EMAIL, uemail)
+            )
         }
     }
     companion object{
