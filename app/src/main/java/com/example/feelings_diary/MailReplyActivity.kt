@@ -94,7 +94,7 @@ class MailReplyActivity: AppCompatActivity() {
 
     }
 
-    fun getUserFromEmail(email:String): User? {
+    private fun getUserFromEmail(email:String): User? {
         var user: User? = null
 
         FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:

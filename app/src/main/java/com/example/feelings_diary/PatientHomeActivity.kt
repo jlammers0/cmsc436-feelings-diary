@@ -3,14 +3,12 @@ package com.example.feelings_diary
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.CalendarView
-import android.widget.ImageButton
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class PatientHomeActivity : AppCompatActivity() {
 
@@ -25,6 +23,12 @@ class PatientHomeActivity : AppCompatActivity() {
     private var mDatabase: FirebaseDatabase? = null
     private var uid:String? = null
     private var uemail:String? = null
+    private var therapistList:MutableList<User>? = null
+    private var databaseTherapists: DatabaseReference? = null
+    private var curUser: User? = null
+
+    private var therapistAdapter: ArrayAdapter<User>? = null
+
 
 
 
@@ -44,6 +48,30 @@ class PatientHomeActivity : AppCompatActivity() {
         patientAddTherapistButton = findViewById(R.id.patientAddTherapistButton)
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
+        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
+            ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                for (data in snapshot.children){
+                    val temp = data.getValue(User::class.java)
+                    if (temp!!.email == uemail!!){
+                        curUser=temp
+                        break
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(TAG,"fetching users failed")
+            }
+
+        })
+
+
+        therapistList = ArrayList()
+        databaseTherapists = FirebaseDatabase.getInstance().getReference("therapists")
+
 
         checkInButton!!.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(this)
@@ -65,6 +93,7 @@ class PatientHomeActivity : AppCompatActivity() {
         settingsButton!!.setOnClickListener{
             //TODO: create reminders to check in and option to delete account
             //patient settings will no longer add therapist we have add therapist button for this
+            //patient settings will need to be able to show and remove connected therapist
         }
 
         calendarButton!!.setOnClickListener{
@@ -80,10 +109,67 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
         patientAddTherapistButton!!.setOnClickListener{
+
             val dialogBuilder = AlertDialog.Builder(this)
             val inflater = layoutInflater
             val dialogView = inflater.inflate(R.layout.patient_find_therapist,null)
             dialogBuilder.setView(dialogView)
+
+            val enrolledTherapistListView = dialogView.findViewById<View>(R.id.enrolledTherapistList) as ListView
+            val findTherapistByEmail = dialogView.findViewById<View>(R.id.findTherapistByEmail) as EditText
+            val requestTherapistButton = dialogView.findViewById<View>(R.id.requestTherapistButton) as Button
+
+
+
+            therapistAdapter = ProspectiveTherapistList(this,
+                therapistList as ArrayList<User>
+            )
+            enrolledTherapistListView.adapter = therapistAdapter
+
+            dialogBuilder.setTitle("Find therapist")
+            val b = dialogBuilder.create()
+
+            b.show()
+            for(therapist in therapistList as ArrayList<User>) {
+                Log.i(TAG, "therapistList contains ${therapist.email}")
+            }
+
+            //not sure why this cast is needed. might have something to do with being set to null at first
+            //and not declared as lateinit
+            enrolledTherapistListView.onItemClickListener = AdapterView.OnItemClickListener{_,_,i,_ ->
+                findTherapistByEmail.setText(therapistList!![i].email)
+
+            }
+
+
+
+
+            requestTherapistButton.setOnClickListener {
+
+
+
+
+                if (findTherapistByEmail.text.toString().isNullOrEmpty()){
+                    Toast.makeText(applicationContext,"Select a therapist from the list or enter therapist email manually",Toast.LENGTH_LONG).show()
+                }
+                var existsFlag = false;
+                for (therapist in therapistList as ArrayList<User>){
+                    if (therapist.email == findTherapistByEmail.text.toString()){
+                        existsFlag =true
+                        FirebaseDatabase.getInstance().reference.child("prospectivePatients").child(therapist.uid).child(uid!!).setValue(curUser)
+                    }
+                }
+                if (existsFlag){
+                    Toast.makeText(applicationContext,"Therapist has been sent a patient request",Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(applicationContext,"Therapist was not found",Toast.LENGTH_LONG).show()
+                }
+
+                //TODO request therapist
+
+                b.dismiss()
+
+            }
 
             //TODO: build therapist list and add node to firebase connecting patients and therapists
         }
@@ -95,6 +181,39 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        databaseTherapists!!.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                therapistList!!.clear()
+                var user: User? = null
+                for (data in snapshot.children){
+                    try {
+                        user = data.getValue(User::class.java)
+                    }catch (e:Exception){
+                        Log.e(TAG,e.toString())
+                    }finally{
+                        therapistList!!.add(user!!)
+                    }
+                }
+
+
+
+            }
+
+
+
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(TherapistHomeActivity.TAG, "loading patients was canceled")
+            }
+        })
+    }
+
+
+
+
 
 
 

@@ -51,6 +51,8 @@ class NewMessageActivity:AppCompatActivity() {
            }
 
             val toUser = getUserFromEmail(toView!!.text.toString())
+            Log.i(TAG,toView!!.text.toString())
+            Log.i(TAG,toUser!!.email)
 
 
 
