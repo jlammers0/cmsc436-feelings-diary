@@ -174,7 +174,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
     override fun onStart(){
         super.onStart()
-        unameList!!.clear()
+
 
         FirebaseDatabase.getInstance().getReference("users")
             .addListenerForSingleValueEvent(object :

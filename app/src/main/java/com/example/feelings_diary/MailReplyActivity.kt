@@ -20,6 +20,7 @@ class MailReplyActivity: AppCompatActivity() {
     private var rspMailBodyView: EditText? = null
     private var sendButton: Button? = null
     private var cancelButton: Button? = null
+    private lateinit var userList: MutableList<User>
 
     private var mailDateView: TextView? = null
     private var mailFromView: TextView? = null
@@ -32,6 +33,7 @@ class MailReplyActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.mail_reply)
 
         rspMailDateView = findViewById(R.id.rspMailDate)
         rspMailToView = findViewById(R.id.rspMailTo)
@@ -40,6 +42,7 @@ class MailReplyActivity: AppCompatActivity() {
         rspMailBodyView = findViewById(R.id.rspMailBody)
         sendButton = findViewById(R.id.sendButton)
         cancelButton = findViewById(R.id.cancelButton)
+        userList = ArrayList()
 
         mailDateView = findViewById(R.id.mailDate)
         mailFromView = findViewById(R.id.mailFrom)
@@ -59,7 +62,10 @@ class MailReplyActivity: AppCompatActivity() {
 
         rspMailToView!!.text = intent.getStringExtra("from")
         rspMailDateView!!.text = Date(System.currentTimeMillis()).toString()
-        rspMailSubjectView!!.setText("RE:" + mailSubjectView!!.text.toString())
+
+        val oldSubject = mailSubjectView!!.text.toString()
+        val newSubject = "RE: " + oldSubject
+        rspMailSubjectView!!.setText(newSubject)
 
         sendButton!!.setOnClickListener{
             var type = MessageType.MESSAGE
@@ -71,8 +77,18 @@ class MailReplyActivity: AppCompatActivity() {
                 Log.i(NewMessageActivity.TAG,"Spinner selected message type didn't match either type")
             }
 
-            val toUser = getUserFromEmail(rspMailToView!!.text.toString())
-
+            var toUser: User?= null
+            for (x in userList){
+                if (x.email == rspMailToView!!.text.toString()){
+                    toUser = x
+                }
+            }
+            Log.i(TAG,rspMailDateView!!.text.toString() )
+            Log.i(TAG,uemail!!)
+            Log.i(TAG,rspMailToView!!.text.toString())
+            Log.i(TAG,type.toString())
+            Log.i(TAG,rspMailSubjectView!!.text.toString())
+            Log.i(TAG,rspMailBodyView!!.text.toString())
 
 
             val message = Message(rspMailDateView!!.text.toString(),uemail!!,rspMailToView!!.text.toString(),type,rspMailSubjectView!!.text.toString(),rspMailBodyView!!.text.toString())
@@ -94,29 +110,27 @@ class MailReplyActivity: AppCompatActivity() {
 
     }
 
-    private fun getUserFromEmail(email:String): User? {
-        var user: User? = null
-
-        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
-            ValueEventListener {
+    override fun onStart() {
+        super.onStart()
+        FirebaseDatabase.getInstance().getReference("users").addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-
-                for (data in snapshot.children){
-                    val temp = data.getValue(User::class.java)
-                    if (user!!.email == email){
-                        user=temp
-                        break
+                userList.clear()
+                var user: User? = null
+                for(data in snapshot.children){
+                    try {
+                        user = data.getValue(User::class.java)
+                    }catch(e:Exception){
+                        Log.e(NewMessageActivity.TAG,e.toString())
+                    }finally{
+                        userList.add(user!!)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.i(TAG,"fetching users failed")
+                TODO("Not yet implemented")
             }
-
         })
-
-        return user
     }
 
     companion object{

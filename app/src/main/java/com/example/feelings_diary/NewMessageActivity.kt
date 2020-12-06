@@ -22,6 +22,7 @@ class NewMessageActivity:AppCompatActivity() {
     private var cancelButton: Button? =null
     private var uid:String?=null
     private var uemail:String?=null
+    private lateinit var userList:MutableList<User>
 
 
     override fun onCreate(savedInstanceState: Bundle?){
@@ -37,6 +38,7 @@ class NewMessageActivity:AppCompatActivity() {
         cancelButton = findViewById(R.id.cancelButton)
         uid = intent.getStringExtra(USER_ID)
         uemail=intent.getStringExtra(USER_EMAIL)
+        userList = ArrayList()
 
        dateView!!.text = Date(System.currentTimeMillis()).toString()
 
@@ -50,7 +52,14 @@ class NewMessageActivity:AppCompatActivity() {
                Log.i(TAG,"Spinner selected message type didn't match either type")
            }
 
-            val toUser = getUserFromEmail(toView!!.text.toString())
+            var toUser: User?= null
+            for (x in userList){
+                if (x.email == toView!!.text.toString()){
+                    toUser = x
+                }
+            }
+
+
             Log.i(TAG,toView!!.text.toString())
             Log.i(TAG,toUser!!.email)
 
@@ -72,30 +81,30 @@ class NewMessageActivity:AppCompatActivity() {
 
     }
 
-    private fun getUserFromEmail(email:String): User? {
-        var user: User? = null
-
-        FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
-            ValueEventListener {
+    override fun onStart() {
+        super.onStart()
+        FirebaseDatabase.getInstance().getReference("users").addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-
-                for (data in snapshot.children){
-                    val temp = data.getValue(User::class.java)
-                    if (user!!.email == email){
-                        user=temp
-                        break
+                userList.clear()
+                var user: User? = null
+                for(data in snapshot.children){
+                    try {
+                        user = data.getValue(User::class.java)
+                    }catch(e:Exception){
+                        Log.e(TAG,e.toString())
+                    }finally{
+                        userList.add(user!!)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.i(MailReplyActivity.TAG,"fetching users failed")
+                TODO("Not yet implemented")
             }
-
         })
-
-        return user
     }
+
+
     companion object{
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"

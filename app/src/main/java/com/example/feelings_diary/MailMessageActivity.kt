@@ -22,6 +22,7 @@ class MailMessageActivity: AppCompatActivity() {
     private var deleteButton: Button? = null
     private var databaseInbox: DatabaseReference? = null
     private var uid: String? = null
+    private var uemail:String? = null
     private var linearLayout: LinearLayout? = null
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -39,6 +40,7 @@ class MailMessageActivity: AppCompatActivity() {
         databaseInbox = FirebaseDatabase.getInstance().getReference("inbox")
 
         uid = intent.getStringExtra(USER_ID)
+        uemail = intent.getStringExtra(USER_EMAIL)
 
 
 
@@ -62,12 +64,14 @@ class MailMessageActivity: AppCompatActivity() {
                 Log.i(TAG,"User tried to reply to Feelings Diary Team")
             }else{
                 val messageIntent = Intent(this@MailMessageActivity,MailReplyActivity::class.java)
-                messageIntent.putExtra(MailInboxActivity.USER_ID,uid)
+                messageIntent.putExtra(USER_ID,uid)
+                messageIntent.putExtra(USER_EMAIL,uemail)
                 messageIntent.putExtra("date",intent.getStringExtra("date"))
                 messageIntent.putExtra("from",intent.getStringExtra("from"))
                 messageIntent.putExtra("type",intent.getStringExtra("type"))
                 messageIntent.putExtra("subject",intent.getStringExtra("subject"))
                 messageIntent.putExtra("body",intent.getStringExtra("body"))
+                startActivity(messageIntent)
             }
 
 

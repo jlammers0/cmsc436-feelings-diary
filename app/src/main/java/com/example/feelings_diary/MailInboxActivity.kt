@@ -76,6 +76,7 @@ class MailInboxActivity : AppCompatActivity(){
         databaseInbox!!.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 messageList!!.clear()
+
                 var message: Message? = null
                 for (data in snapshot.child(uid!!).children){
                     try {
@@ -86,6 +87,10 @@ class MailInboxActivity : AppCompatActivity(){
                         messageList!!.add(message!!)
                     }
                 }
+
+
+                val sortedList = messageList!!.sortedByDescending{it.date}
+                messageList = sortedList.toMutableList()
                 val messageAdapter = MailMessage(this@MailInboxActivity,messageList!!)
                 mailListView!!.adapter = messageAdapter
 
