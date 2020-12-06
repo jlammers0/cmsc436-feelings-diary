@@ -55,9 +55,12 @@ class MailInboxActivity : AppCompatActivity(){
             messageIntent.putExtra(USER_EMAIL,uemail)
             messageIntent.putExtra("date",message.date)
             messageIntent.putExtra("from",message.from)
-            messageIntent.putExtra("type",message.messageType)
+            messageIntent.putExtra("type",message.messageType.toString())
             messageIntent.putExtra("subject",message.subject)
             messageIntent.putExtra("body",message.body)
+            if (message.meeting!= null){
+                messageIntent.putExtra("meeting",message.meeting)
+            }
             startActivity(messageIntent)
         }
 
