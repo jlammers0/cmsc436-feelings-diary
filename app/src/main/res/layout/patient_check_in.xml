@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:max="100"
         android:min="0"
-        android:progress="0"
-        app:layout_constraintBottom_toTopOf="@id/patentCheckInComment"
+        android:progress="50"
+        app:layout_constraintBottom_toTopOf="@id/patientCheckInComment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
         android:contentDescription="@string/feelings_illustration" />
 
     <EditText
-        android:id="@+id/patentCheckInComment"
+        android:id="@+id/patientCheckInComment"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:autofillHints="no"
@@ -63,9 +63,9 @@
         android:id="@+id/completeCheckinButton"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/patentCheckInComment"
+        app:layout_constraintStart_toStartOf="@id/patientCheckInComment"
         app:layout_constraintEnd_toStartOf="@id/cancelCheckinButton"
-        app:layout_constraintTop_toBottomOf="@id/patentCheckInComment"
+        app:layout_constraintTop_toBottomOf="@id/patientCheckInComment"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/save_check_in"
 
@@ -75,10 +75,10 @@
         android:id="@+id/cancelCheckinButton"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/patentCheckInComment"
+        app:layout_constraintTop_toBottomOf="@id/patientCheckInComment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/completeCheckinButton"
-        app:layout_constraintEnd_toEndOf="@id/patentCheckInComment"
+        app:layout_constraintEnd_toEndOf="@id/patientCheckInComment"
         android:text="@string/cancel_check_in"/>
 
 

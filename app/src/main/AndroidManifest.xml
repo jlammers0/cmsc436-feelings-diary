@@ -25,6 +25,7 @@
         <activity android:name="com.example.feelings_diary.MailMessageActivity"/>
         <activity android:name="com.example.feelings_diary.MailReplyActivity"/>
         <activity android:name="com.example.feelings_diary.NewMessageActivity"/>
+        <activity android:name="com.example.feelings_diary.CheckInActivity"/>
     </application>
 
 </manifest>

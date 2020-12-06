@@ -53,7 +53,8 @@ class PatientHomeActivity : AppCompatActivity() {
             //TODO: patient_check_in is a template. Check in still needs more work
             //needs extra faces, attach slider to faces with corresponding ints
             //firebase node "diary" to be added to store patient check ins
-
+            startActivity(Intent(this@PatientHomeActivity,CheckInActivity::class.java).putExtra(USER_ID, uid).putExtra(
+                USER_EMAIL,uemail))
         }
 
         //TODO: calendarView
@@ -74,7 +75,8 @@ class PatientHomeActivity : AppCompatActivity() {
         logoutButton!!.setOnClickListener{
             mAuth!!.signOut()
             Toast.makeText(applicationContext,"You have been successfully logged out", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this@PatientHomeActivity,MainActivity::class.java))
+            startActivity(Intent(this@PatientHomeActivity,MainActivity::class.java).putExtra(USER_ID,
+                mAuth!!.currentUser!!.uid))
         }
 
         patientAddTherapistButton!!.setOnClickListener{
