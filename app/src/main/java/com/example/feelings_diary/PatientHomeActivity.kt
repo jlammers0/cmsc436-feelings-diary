@@ -3,6 +3,7 @@ package com.example.feelings_diary
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -35,6 +36,7 @@ class PatientHomeActivity : AppCompatActivity() {
     private var uemail:String? = null
     private var therapistList:MutableList<User>? = null
     private var databaseTherapists: DatabaseReference? = null
+    private var users:MutableList<User>? = null
     private var curUser: User? = null
 
     private var therapistAdapter: ArrayAdapter<User>? = null
@@ -60,7 +62,7 @@ class PatientHomeActivity : AppCompatActivity() {
         uemail = intent.getStringExtra(USER_EMAIL)
 
 
-
+        users = ArrayList()
         therapistList = ArrayList()
         databaseTherapists = FirebaseDatabase.getInstance().getReference("therapists")
 
@@ -139,11 +141,16 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
         calendarButton!!.setOnClickListener{
-            // Get reference to fragment manager
-            val manager = supportFragmentManager
 
-            // Show Date picker
-            DatePickerFragment(this, manager).show(manager, "Patient Date Picker")
+
+            val calendarEventTime = System.currentTimeMillis()
+
+            val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+            ContentUris.appendId(builder,calendarEventTime)
+            val uri = builder.build()
+            val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+            startActivity(intent)
+
         }
 
 
@@ -192,6 +199,12 @@ class PatientHomeActivity : AppCompatActivity() {
 
             requestTherapistButton.setOnClickListener {
 
+                for(user in users!!){
+                    if (user.email == uemail){
+                        curUser = user
+                    }
+                }
+
 
 
 
@@ -235,12 +248,15 @@ class PatientHomeActivity : AppCompatActivity() {
             ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                var temp:User? = null
                 for (data in snapshot.children){
-                    val temp = data.getValue(User::class.java)
-                    if (temp!!.email == uemail!!){
-                        curUser=temp
 
+                    try {
+                        temp = data.getValue(User::class.java)
+                    }catch (e:Exception){
+                        Log.e(TAG,e.toString())
+                    }finally{
+                        users!!.add(temp!!)
                     }
                 }
             }

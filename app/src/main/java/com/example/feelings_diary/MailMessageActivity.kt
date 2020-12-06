@@ -79,12 +79,22 @@ class MailMessageActivity: AppCompatActivity() {
         }
 
         if(intent.getStringExtra("type").equals("MEETINGREQUEST",true)){
+            Log.i(TAG,"Creating buttons")
+            val layout = findViewById(R.id.mailMessageView) as LinearLayout
+            val meetingDateView = TextView(this)
+            meetingDateView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+
+            val mMeetingDate = intent.getStringExtra("meeting")
+            val newmMeetingDate = "Meeting Request Date: ${mMeetingDate}"
+            meetingDateView.text = newmMeetingDate
+            layout.addView(meetingDateView)
             val scheduleMeetingButton = Button(this)
             scheduleMeetingButton.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
             scheduleMeetingButton.text = "Add meeting to calendar"
             scheduleMeetingButton.setOnClickListener{
                 // TODO: Add to google calendar https://itnext.io/android-calendar-intent-8536232ecb38
             }
+            layout.addView(scheduleMeetingButton)
         }
 
     }

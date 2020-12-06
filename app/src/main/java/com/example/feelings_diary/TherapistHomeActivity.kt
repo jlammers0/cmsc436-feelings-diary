@@ -1,8 +1,10 @@
 package com.example.feelings_diary
 
+import android.content.ContentUris
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -33,6 +35,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private var uemail:String? = null
     private lateinit var patients: MutableList<User>
     private lateinit var prospectivePatients: MutableList<User>
+    private var selectedPatient: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,20 +70,61 @@ class TherapistHomeActivity : AppCompatActivity() {
         //TODO: patientList made into listView. Onclick will only select patients and allow other buttons to act on selected patient
 
 
+        patientListView.onItemClickListener = AdapterView.OnItemClickListener{_,_,i,_->
+            selectedPatient = patients[i]
+        }
+
+        calendarButton.setOnClickListener{
+            val calendarEventTime = System.currentTimeMillis()
+
+            val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+            ContentUris.appendId(builder,calendarEventTime)
+            val uri = builder.build()
+            val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+            startActivity(intent)
+        }
+
         checkInButton.setOnClickListener{
             //TODO: view list of this patients most recent checkins. listview
             //requires patient to be selected from patient list
+            if (selectedPatient == null){
+                Toast.makeText(applicationContext,"Must select a patient from list to view their check-ins",Toast.LENGTH_SHORT).show()
+            }else{
+                //TODO: show checkins
+            }
         }
 
         messageButton.setOnClickListener{
             //TODO: use the messenger. use intents to feed in the patient and allow therapist to full subject and body. messageType=message
             //requires patient to be selected from patient list
+            if (selectedPatient == null){
+                Toast.makeText(applicationContext,"Must select a patient from list to send a message",Toast.LENGTH_SHORT).show()
+            }else{
+                val messageIntent = Intent(this@TherapistHomeActivity, NewMessageActivity::class.java)
+                messageIntent.putExtra(USER_ID,uid)
+                messageIntent.putExtra(USER_EMAIL,uemail)
+                messageIntent.putExtra("TO",selectedPatient!!.email)
+                startActivity(messageIntent)
+            }
 
         }
 
         aptButton.setOnClickListener{
             //TODO: use the messenger. use intents to feed patient. messsageType=MEETINGREQUEST. use a subject and body template
             //requires patient to be selected from patient list
+
+            if (selectedPatient == null){
+                Toast.makeText(applicationContext,"Must select a patient from list to send a message",Toast.LENGTH_SHORT).show()
+            }else{
+                val messageIntent = Intent(this@TherapistHomeActivity, NewMessageActivity::class.java)
+                messageIntent.putExtra(USER_ID,uid)
+                messageIntent.putExtra(USER_EMAIL,uemail)
+                messageIntent.putExtra("TO",selectedPatient!!.email)
+
+                messageIntent.putExtra("SUBJECT","Requesting a Meeting")
+                startActivity(messageIntent)
+            }
+
         }
 
         queryButton.setOnClickListener{
