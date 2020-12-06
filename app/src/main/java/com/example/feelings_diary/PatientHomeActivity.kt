@@ -85,6 +85,7 @@ class PatientHomeActivity : AppCompatActivity() {
         //to patientList or messages will do
 
         settingsButton!!.setOnClickListener{
+            Log.i(TAG,"SettingsButton clicked")
             //TODO: create reminders to check in and option to delete account
             //patient settings will no longer add therapist we have add therapist button for this
             //patient settings will need to be able to show and remove connected therapist
@@ -96,8 +97,14 @@ class PatientHomeActivity : AppCompatActivity() {
             dialogBuilder.setView(dialogView)
 
             // Get Fragment Buttons
-            val deleteButton = dialogView.findViewById<Button>(R.id.deleteButton)
-            val removeTherapistButton = dialogView.findViewById<Button>(R.id.removeTherapistButton)
+            val deleteButton = dialogView.findViewById<View>(R.id.deleteUserButton) as Button
+            val removeTherapistButton = dialogView.findViewById<View>(R.id.removeTherapistButton) as Button
+
+            dialogBuilder.setTitle("Patient Settings")
+            val b = dialogBuilder.create()
+
+            b.show()
+            Log.i(TAG,"DialogBuilder should be showing")
 
             // Onclick for delete user button
             deleteButton.setOnClickListener {
@@ -117,13 +124,17 @@ class PatientHomeActivity : AppCompatActivity() {
                     // Notify user that account couldn't be deleted
                     Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_LONG)
                 }
+                b.dismiss()
             }
 
             // Onclick for remove therapist button
             removeTherapistButton.setOnClickListener {
                 // TODO Figure out a way to remove a therapist from this patient's list
                 // Maybe have a therapist ListView in this fragment??
+                b.dismiss()
             }
+
+
         }
 
         calendarButton!!.setOnClickListener{
