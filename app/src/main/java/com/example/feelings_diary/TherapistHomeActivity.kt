@@ -75,6 +75,7 @@ class TherapistHomeActivity : AppCompatActivity() {
         messageButton.setOnClickListener{
             //TODO: use the messenger. use intents to feed in the patient and allow therapist to full subject and body. messageType=message
             //requires patient to be selected from patient list
+
         }
 
         aptButton.setOnClickListener{

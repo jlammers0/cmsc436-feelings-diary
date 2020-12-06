@@ -99,7 +99,7 @@ class NewMessageActivity:AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.i(TAG,"canceled firebase operation")
             }
         })
     }
