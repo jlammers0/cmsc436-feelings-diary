@@ -157,6 +157,7 @@ class RegistrationActivity : AppCompatActivity() {
                                             "${System.lineSeparator()} Best Wishes, ${System.lineSeparator()} Feelings Diary Team"
                                 )
                             )
+                            mDatabaseReference!!.child("therapists").child(uid).setValue(user)
                         }
 
 
@@ -173,6 +174,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
     override fun onStart(){
         super.onStart()
+        unameList!!.clear()
 
         FirebaseDatabase.getInstance().getReference("users")
             .addListenerForSingleValueEvent(object :
@@ -180,6 +182,7 @@ class RegistrationActivity : AppCompatActivity() {
 
 
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    unameList!!.clear()
                     for (data in snapshot.children) {
                         var user: User? = null
                         try {
