@@ -1,14 +1,24 @@
 package com.example.feelings_diary
 
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PatientHomeActivity : AppCompatActivity() {
 
@@ -97,7 +107,11 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
         calendarButton!!.setOnClickListener{
-            //TODO: link to android calendar https://itnext.io/android-calendar-intent-8536232ecb38
+            // Get reference to fragment manager
+            val manager = supportFragmentManager
+
+            // Show Date picker
+            DatePickerFragment(this, manager).show(manager, "Patient Date Picker")
         }
 
 
@@ -211,18 +225,71 @@ class PatientHomeActivity : AppCompatActivity() {
         })
     }
 
-
-
-
-
-
-
     companion object{
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
 
     }
+}
 
+/* Date Picker for calendar support*/
+private class DatePickerFragment(context: Context, manager: FragmentManager) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
+    private val mContext = context
+    private val mManager = manager
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Use the current date as the default date in the picker
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        // Create a new instance of DatePickerDialog and return it
+        return DatePickerDialog(mContext, this, year, month, day)
+    }
+
+    override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
+        val tPicker = TimePickerFragment()
+
+        // Show Time Picker
+        tPicker.show(mManager, "Patient Time Picker")
+
+        // Get picked time in milliseconds
+        val time = Calendar.getInstance().run {
+            set(year, month, day, tPicker.mHour, tPicker.mMinute)
+            timeInMillis
+        }
+
+        // Start calendar activity
+        val calIntent = Intent(Intent.ACTION_INSERT)
+            .setData(CalendarContract.Events.CONTENT_URI)
+            .putExtra(CalendarContract.Events.TITLE, "Patient Check-In")
+            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, time)
+
+        startActivity(calIntent)
+    }
+}
+
+/* Time Picker for Calendar Support */
+class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+
+    var mHour: Int = 0
+    var mMinute: Int = 0
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Use the current time as the default values for the picker
+        val c = Calendar.getInstance()
+        val hour = c.get(Calendar.HOUR_OF_DAY)
+        val minute = c.get(Calendar.MINUTE)
+
+        // Create a new instance of TimePickerDialog and return it
+        return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
+    }
+
+    override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+        mHour = hourOfDay
+        mMinute = minute
+    }
 }
