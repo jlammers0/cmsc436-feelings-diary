@@ -101,12 +101,22 @@ class PatientHomeActivity : AppCompatActivity() {
 
             // Onclick for delete user button
             deleteButton.setOnClickListener {
-                // Get current user and delete account
+                // Get current user
                 val currentUser = mAuth!!.currentUser
-                currentUser!!.delete()
 
-                // Go back to registration activity
-                startActivity(Intent(this, RegistrationActivity::class.java))
+                try {
+                    // Delete account
+                    currentUser!!.delete()
+
+                    // Notify user that account has been deleted
+                    Toast.makeText(this, "You have successfully deleted your account.", Toast.LENGTH_LONG)
+
+                    // Go back to main activity
+                    startActivity(Intent(this, MainActivity::class.java))
+                } catch (e: Exception) {
+                    // Notify user that account couldn't be deleted
+                    Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_LONG)
+                }
             }
 
             // Onclick for remove therapist button
