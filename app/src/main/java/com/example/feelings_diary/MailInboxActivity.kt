@@ -3,6 +3,7 @@ package com.example.feelings_diary
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
@@ -21,6 +22,8 @@ class MailInboxActivity : AppCompatActivity(){
     private var databaseInbox: DatabaseReference? = null
     private var uid: String? = null
     private var uemail:String?=null
+    private var searchCriteria: String = "date"
+    private var messageList2:MutableList<Message> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,8 +44,110 @@ class MailInboxActivity : AppCompatActivity(){
 
         //TODO: autoCompleteView needs an adapter to work. use autocompleteview and spinner to query mail
 
+        autoCompleteCriteriaSpinner!!.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (p2==0){//date
+                    searchCriteria = "date"
+                    var dateList = ArrayList<String>()
+                    for (x in messageList!!){
+                        if (!dateList.contains(x.date)){
+                            dateList.add(x.date)
+                        }
+                    }
+                    val adapter:ArrayAdapter<String> = ArrayAdapter<String>(this@MailInboxActivity,android.R.layout.simple_dropdown_item_1line,dateList)
+                    autoCompleteView!!.setAdapter(adapter)
+                }
+                if (p2 == 1){//from
+                    searchCriteria = "from"
+                    var fromList = ArrayList<String>()
+                    for (x in messageList!!){
+                        if (!fromList.contains(x.from)){
+                            fromList.add(x.from)
+                        }
+                    }
+                    val adapter:ArrayAdapter<String> = ArrayAdapter<String>(this@MailInboxActivity,android.R.layout.simple_dropdown_item_1line,fromList)
+                    autoCompleteView!!.setAdapter(adapter)
+
+
+                }
+                if (p2 == 2){//messagetype
+                    searchCriteria = "messageType"
+                    val arr = ArrayList<String>()
+                    arr.add(MessageType.MESSAGE.toString())
+                    arr.add(MessageType.MEETINGREQUEST.toString())
+                    arr.add("message")
+                    arr.add("meetingrequest")
+                    val adapter:ArrayAdapter<String> = ArrayAdapter<String>(this@MailInboxActivity,android.R.layout.simple_dropdown_item_1line,arr)
+                    autoCompleteView!!.setAdapter(adapter)
+                }
+                if(p2==3){//subject
+                    searchCriteria = "subject"
+                    var subjectList = ArrayList<String>()
+                    for (x in messageList!!){
+                        if (!subjectList.contains(x.subject)){
+                            subjectList.add(x.subject)
+                        }
+                    }
+                    val adapter:ArrayAdapter<String> = ArrayAdapter<String>(this@MailInboxActivity,android.R.layout.simple_dropdown_item_1line,subjectList)
+                    autoCompleteView!!.setAdapter(adapter)
+                }
+                if (p2==4){//body
+                    searchCriteria = "body"
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+
+
+
         searchButton!!.setOnClickListener {
-            //TODO: needs autocompleteview and spinner. will launch a query and regenerate the listview
+            messageList2.clear()
+            val criteria = autoCompleteView!!.text.toString()
+
+            if (searchCriteria == "date"){
+                for (x in messageList!!){
+                    if (x.date.contains(criteria)){
+                        messageList2.add(x)
+                    }
+                }
+
+            }
+            if (searchCriteria == "from"){
+                for (x in messageList!!){
+                    if (x.from.contains(criteria)){
+                        messageList2.add(x)
+                    }
+                }
+
+            }
+            if (searchCriteria == "messageType"){
+                for (x in messageList!!){
+                    if (x.messageType.toString().equals(criteria.replace("\\s".toRegex(), ""),true)){
+                        messageList2.add(x)
+                    }
+                }
+
+            }
+            if (searchCriteria == "subject"){
+                for (x in messageList!!){
+                    if (x.subject.contains(criteria)){
+                        messageList2.add(x)
+                    }
+                }
+
+            }
+            if (searchCriteria == "body"){
+                for (x in messageList!!){
+                    if (x.body.contains(criteria)){
+                        messageList2.add(x)
+                    }
+                }
+            }
+            val messageAdapter = MailMessage(this@MailInboxActivity,messageList2!!)
+            mailListView!!.adapter = messageAdapter
         }
 
 
