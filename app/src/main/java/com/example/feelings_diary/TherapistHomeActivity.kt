@@ -94,6 +94,40 @@ class TherapistHomeActivity : AppCompatActivity() {
             }
         }
 
+        settingsButton.setOnClickListener{
+            var curPatient:User? = null
+            val dialogBuilder = AlertDialog.Builder(this)
+            val inflater = layoutInflater
+            val dialogView = inflater.inflate(R.layout.therapist_settings,null)
+            dialogBuilder.setView(dialogView)
+
+            val removePatientButton = dialogView.findViewById<View>(R.id.removePatientButton) as Button
+            val deleteThisTherapistButton = dialogView.findViewById<View>(R.id.deleteThisTherapistButton) as Button
+            val subscribedPatientList = dialogView.findViewById<View>(R.id.subscribedPatientList) as ListView
+
+            val subscribedPatientListAdapter = ProspectivePatientList(this,patients)
+            subscribedPatientList.adapter = subscribedPatientListAdapter
+
+            subscribedPatientList.onItemClickListener = AdapterView.OnItemClickListener{_,_,i,_ ->
+                curPatient = patients[i]
+            }
+
+            dialogBuilder.setTitle("Therapist Settings")
+            val b = dialogBuilder.create()
+            b.show()
+            removePatientButton.setOnClickListener{
+                patients.remove(curPatient)
+                mDatabase!!.reference.child("patients").child(uid!!).child(curPatient!!.uid).removeValue()
+                Toast.makeText(this,"Patient has been removed",Toast.LENGTH_SHORT).show()
+                b.dismiss()
+            }
+            deleteThisTherapistButton.setOnClickListener {
+
+            }
+
+
+        }
+
         messageButton.setOnClickListener{
             //TODO: use the messenger. use intents to feed in the patient and allow therapist to full subject and body. messageType=message
             //requires patient to be selected from patient list
