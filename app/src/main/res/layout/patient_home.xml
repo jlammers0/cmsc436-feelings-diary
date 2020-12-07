@@ -94,4 +94,13 @@
         tools:layout_editor_absoluteX="289dp"
         tools:layout_editor_absoluteY="16dp"
         android:contentDescription="@string/logout_icon"/>
+
+    <Button
+        android:id="@+id/patientViewCheckInButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="View Check Ins on Selected Date"
+        app:layout_constraintEnd_toEndOf="@id/calendarView"
+        app:layout_constraintStart_toStartOf="@id/calendarView"
+        app:layout_constraintTop_toBottomOf="@+id/patientCheckInButton"  />
 </androidx.constraintlayout.widget.ConstraintLayout>

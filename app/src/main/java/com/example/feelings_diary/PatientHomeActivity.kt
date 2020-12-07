@@ -24,6 +24,7 @@ class PatientHomeActivity : AppCompatActivity() {
 
     private var calendarView:CalendarView?=null
     private var checkInButton:Button?=null
+    private var listButton:Button?=null
     private var mailButton:ImageButton?=null
     private var calendarButton:ImageButton?=null
     private var settingsButton:ImageButton?=null
@@ -49,6 +50,7 @@ class PatientHomeActivity : AppCompatActivity() {
 
         calendarView = findViewById(R.id.calendarView)
         checkInButton = findViewById(R.id.patientCheckInButton)
+        listButton = findViewById(R.id.patientViewCheckInButton)
         mailButton = findViewById(R.id.patientMailButton)
         calendarButton = findViewById(R.id.patientCalendarButton)
         settingsButton = findViewById(R.id.patientSettingsButton)
@@ -77,10 +79,18 @@ class PatientHomeActivity : AppCompatActivity() {
                 USER_EMAIL,uemail))
         }
 
+
         //TODO: calendarView
         //get selected date and create a list of check-ins on that date
         //this view has not been created yet. dialog or activity with a listview similar
         //to patientList or messages will do
+        listButton!!.setOnClickListener{
+            val selectedDate = calendarView!!.date.toString()
+            startActivity(Intent(this@PatientHomeActivity, CheckInListActivity::class.java).putExtra(USER_ID, uid).putExtra(
+                DATE_SELECTED, selectedDate).putExtra(USER_EMAIL, uemail)
+            )
+
+        }
 
         settingsButton!!.setOnClickListener{
             //TODO: create reminders to check in and option to delete account
@@ -267,7 +277,7 @@ class PatientHomeActivity : AppCompatActivity() {
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
-
+        const val DATE_SELECTED = "date selected"
     }
 }
 

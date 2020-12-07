@@ -49,4 +49,10 @@
     <string name="tap_to_expand">Tap to Expand</string>
     <string name="reply">Reply</string>
     <string name="delete_message">Delete Message</string>
+    <string name="your_previous_check_ins">Your Previous Check-Ins</string>
+    <string name="date_of_entry">Date of Entry:</string>
+    <string name="your_comment">Your Comment:</string>
+    <string name="date_string">Date String</string>
+    <string name="comment_string">Comment String</string>
+    <string name="back_to_home_screen">Back to Home Screen</string>
 </resources>

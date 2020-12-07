@@ -69,9 +69,10 @@ class CheckInActivity: AppCompatActivity() {
         }
 
         saveButton!!.setOnClickListener{
-            val d = Date(System.currentTimeMillis())
-            val entry = DiaryEntry(d.toString(), mSeekBar.progress, mFeelText?.text.toString())
-            mDatabaseReference!!.child("diary").child("uid").child(d.toString()).setValue(entry)
+            val t = System.currentTimeMillis()
+            val d = Date(t)
+            val entry = DiaryEntry(d.toString(), mSeekBar.progress, t,  mFeelText?.text.toString())
+            mDatabaseReference!!.child("diary").child(uid!!).child(d.toString()).setValue(entry)
             Toast.makeText(applicationContext, "Check in saved. Your therapist will review your check in shortly",
                 Toast.LENGTH_LONG).show()
 
