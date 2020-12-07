@@ -1,11 +1,10 @@
 package com.example.feelings_diary
 
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.format.DateFormat
@@ -14,6 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +35,7 @@ class PatientHomeActivity : AppCompatActivity() {
     private var uid:String? = null
     private var uemail:String? = null
     private var therapistList:MutableList<User>? = null
+    private var patientNotificationList: MutableList<PatientNotification>? = null
     private var databaseTherapists: DatabaseReference? = null
     private var users:MutableList<User>? = null
     private var databasePatients: DatabaseReference? = null
@@ -42,6 +43,7 @@ class PatientHomeActivity : AppCompatActivity() {
     private var curUser: User? = null
 
     private var therapistAdapter: ArrayAdapter<User>? = null
+    private var notificationAdapter : ArrayAdapter<PatientNotification>? = null
 
 
 
@@ -69,6 +71,7 @@ class PatientHomeActivity : AppCompatActivity() {
 
         users = ArrayList()
         therapistList = ArrayList()
+        patientNotificationList = ArrayList()
         databaseTherapists = FirebaseDatabase.getInstance().getReference("therapists")
 
 
@@ -116,6 +119,10 @@ class PatientHomeActivity : AppCompatActivity() {
             Log.i(TAG,"DialogBuilder should be showing")
 
 
+            // Initialize notification list's adapter
+            notificationAdapter = PatientNotificationList(this,
+                (patientNotificationList as List<PatientNotification>))
+            patientNotificationListView.adapter = notificationAdapter
 
 
             if (!personalTherapist.isNullOrEmpty()) {
@@ -128,9 +135,55 @@ class PatientHomeActivity : AppCompatActivity() {
                 }
             }
 
+            // OnClick for add notification button
+            addNotificationButton.setOnClickListener {
+                // Get refs to time and date pickers
+                val datePicker = DatePickerFragment(this)
+                val timePicker = TimePickerFragment()
 
+                // Show date and time pickers
+                datePicker.show(supportFragmentManager, "Date selection")
+                timePicker.show(supportFragmentManager, "Time Selection")
 
+                // Convert user selection into PatientNotification()
+                val newNotification = PatientNotification(
+                    datePicker.mYear,
+                    datePicker.mMonth,
+                    datePicker.mDay,
+                    timePicker.mHour,
+                    timePicker.mMinute
+                )
 
+                // Add new notification to list and notify adapter
+                (patientNotificationList as ArrayList).add(newNotification)
+                (notificationAdapter as PatientNotificationList).notifyDataSetChanged()
+
+                // Create pending intent for notification
+                val notIntent = Intent(this, LoginActivity::class.java)
+                val pendingIntent = PendingIntent.getActivity(this, 0, notIntent, 0)
+
+                // Get reference to notification builder
+                var builder = NotificationCompat.Builder(this, CHAN_ID)
+                    .setContentTitle("Check-In Reminder")
+                    .setContentText("This is a reminder that you have a check-in!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+
+                // TODO add support for scheduled notifications
+            }
+
+            // OnClick for remove notification button
+            removeNotificationsButton.setOnClickListener {
+                val currentNot = patientNotificationListView.selectedItem as PatientNotification
+
+                (patientNotificationList as ArrayList<PatientNotification>).remove(currentNot)
+
+                val adapter = patientNotificationListView.adapter
+                (adapter as ArrayAdapter<PatientNotification>).notifyDataSetChanged()
+
+                // TODO remove scheduled notification
+            }
 
             // Onclick for remove therapist button
             removeTherapistButton.setOnClickListener {
@@ -139,11 +192,6 @@ class PatientHomeActivity : AppCompatActivity() {
                 }else{
                     databasePatients!!.child(personalTherapist!!).child(uid!!).removeValue()
                 }
-
-                // TODO Figure out a way to remove a therapist from this patient's list
-                // Maybe have a therapist ListView in this fragment??
-
-
 
                 b.dismiss()
             }
@@ -356,15 +404,18 @@ class PatientHomeActivity : AppCompatActivity() {
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
-
+        const val CHAN_ID = "feelings-diary-id"
     }
 }
 
 /* Date Picker for calendar support*/
-private class DatePickerFragment(context: Context, manager: FragmentManager) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+private class DatePickerFragment(context: Context) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private val mContext = context
-    private val mManager = manager
+
+    var mYear: Int = 0
+    var mMonth: Int = 0
+    var mDay: Int = 0
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker
@@ -378,24 +429,8 @@ private class DatePickerFragment(context: Context, manager: FragmentManager) : D
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-        val tPicker = TimePickerFragment()
-
-        // Show Time Picker
-        tPicker.show(mManager, "Patient Time Picker")
-
-        // Get picked time in milliseconds
-        val time = Calendar.getInstance().run {
-            set(year, month, day, tPicker.mHour, tPicker.mMinute)
-            timeInMillis
-        }
-
-        // Start calendar activity
-        val calIntent = Intent(Intent.ACTION_INSERT)
-            .setData(CalendarContract.Events.CONTENT_URI)
-            .putExtra(CalendarContract.Events.TITLE, "Patient Check-In")
-            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, time)
-
-        startActivity(calIntent)
+        // Set date
+        mYear = year; mMonth = month; mDay = day;
     }
 }
 
