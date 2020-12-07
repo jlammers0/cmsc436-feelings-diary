@@ -3,6 +3,7 @@ package com.example.feelings_diary
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,20 @@ class CheckInListActivity : AppCompatActivity(){
 
         databaseDiary = FirebaseDatabase.getInstance().getReference("diary")
         diaryEntries = ArrayList()
+
+        checkListView!!.onItemClickListener = AdapterView.OnItemClickListener{_,_,i,_->
+            val selectedEntry = diaryEntries[i]
+            val editIntent = Intent(this@CheckInListActivity,CheckInActivity::class.java)
+            editIntent.putExtra(USER_ID,uid)
+            editIntent.putExtra(USER_EMAIL,uemail)
+            editIntent.putExtra("edit","true")
+            editIntent.putExtra("score",selectedEntry.feeling.toString())
+            editIntent.putExtra("comment",selectedEntry.comment)
+            editIntent.putExtra("date",selectedEntry.date)
+            startActivity(editIntent)
+
+
+        }
 
         backButton!!.setOnClickListener{
             startActivity(
@@ -75,6 +90,9 @@ class CheckInListActivity : AppCompatActivity(){
                         daysEntries.add(ent)
                     }
                 }
+
+                val sortedList = daysEntries.sortedByDescending{it.date}
+                daysEntries = sortedList.toMutableList() as ArrayList<DiaryEntry>
                 val checkAdapter = CheckInAdapter(this@CheckInListActivity, daysEntries, null)
                 checkListView!!.adapter = checkAdapter
             }

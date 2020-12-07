@@ -49,6 +49,8 @@ class CheckInActivity: AppCompatActivity() {
         uemail = intent.getStringExtra(USER_EMAIL)
 
 
+
+
         updateFace(mSeekBar.progress)
 
         mSeekBar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
@@ -58,6 +60,16 @@ class CheckInActivity: AppCompatActivity() {
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
+
+        if (intent.getStringExtra("edit") != null){
+
+            val score = intent.getStringExtra("score")
+            val comment = intent.getStringExtra("comment")
+            mSeekBar.progress = score!!.toInt()
+            updateFace(mSeekBar.progress)
+            mFeelText!!.setText(comment)
+
+        }
 
         cancelButton!!.setOnClickListener{
             Toast.makeText(applicationContext, "Check in cancelled", Toast.LENGTH_SHORT).show()
@@ -71,8 +83,15 @@ class CheckInActivity: AppCompatActivity() {
         saveButton!!.setOnClickListener{
             val t = System.currentTimeMillis()
             val d = Date(t)
-            val entry = DiaryEntry(d.toString(), mSeekBar.progress, t,  mFeelText?.text.toString())
-            mDatabaseReference!!.child("diary").child(uid!!).child(d.toString()).setValue(entry)
+            var entry: DiaryEntry? = null
+            if (intent.getStringExtra("edit")!= null){
+                val date = intent.getStringExtra("date")
+                entry = DiaryEntry(date!!, mSeekBar.progress, t,  mFeelText?.text.toString())
+            }else{
+                entry = DiaryEntry(d.toString(), mSeekBar.progress, t,  mFeelText?.text.toString())
+            }
+
+            mDatabaseReference!!.child("diary").child(uid!!).child(entry.date).setValue(entry)
             Toast.makeText(applicationContext, "Check in saved. Your therapist will review your check in shortly",
                 Toast.LENGTH_LONG).show()
 
