@@ -1,3 +1,5 @@
+@file:Suppress("CascadeIf", "CascadeIf", "CascadeIf", "CascadeIf")
+
 package com.example.feelings_diary
 
 import android.app.DatePickerDialog
@@ -70,7 +72,7 @@ TimePickerDialog.OnTimeSetListener {
         val mFrom = intent.getStringExtra("from")
         val displayFrom = "From: $mFrom"
         val mType = intent.getStringExtra("type")
-        var displayType = "Type: $mType"
+        val displayType = "Type: $mType"
         val mSubject = intent.getStringExtra("subject")
         val displaySubject = "Subject: $mSubject"
         val mBody = intent.getStringExtra("body")
@@ -162,7 +164,7 @@ TimePickerDialog.OnTimeSetListener {
         myMonth = month
         val calendar: Calendar = Calendar.getInstance()
 
-        Log.i(TAG,"MY year = ${myYear}")
+        Log.i(TAG,"MY year = $myYear")
 
         val timePickerDialog = TimePickerDialog(this@MailReplyActivity, this@MailReplyActivity, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
             false)

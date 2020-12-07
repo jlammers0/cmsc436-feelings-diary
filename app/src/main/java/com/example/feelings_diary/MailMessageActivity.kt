@@ -1,5 +1,6 @@
 package com.example.feelings_diary
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +15,7 @@ import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DEPRECATION")
 class MailMessageActivity: AppCompatActivity() {
 
     private var mailDateView: TextView? = null
@@ -27,6 +29,7 @@ class MailMessageActivity: AppCompatActivity() {
     private var uid: String? = null
     private var uemail:String? = null
     private var linearLayout: LinearLayout? = null
+    @SuppressLint("SimpleDateFormat", "CutPasteId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mail_message_view)
@@ -51,7 +54,7 @@ class MailMessageActivity: AppCompatActivity() {
         val mFrom = intent.getStringExtra("from")
         val displayFrom = "From: $mFrom"
         val mType = intent.getStringExtra("type")
-        var displayType = "Type: $mType"
+        val displayType = "Type: $mType"
         val mSubject = intent.getStringExtra("subject")
         val displaySubject = "Subject: $mSubject"
         val mBody = intent.getStringExtra("body")
@@ -92,12 +95,12 @@ class MailMessageActivity: AppCompatActivity() {
 
         if(intent.getStringExtra("type").equals("MEETINGREQUEST",true)){
             Log.i(TAG,"Creating buttons")
-            val layout = findViewById(R.id.mailMessageView) as LinearLayout
+            val layout = findViewById<LinearLayout>(R.id.mailMessageView)
             val meetingDateView = TextView(this)
             meetingDateView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
 
             val mMeetingDate = intent.getStringExtra("meeting")
-            val newmMeetingDate = "Meeting Request Date: ${mMeetingDate}"
+            val newmMeetingDate = "Meeting Request Date: $mMeetingDate"
             meetingDateView.text = newmMeetingDate
             layout.addView(meetingDateView)
             val scheduleMeetingButton = Button(this)
@@ -110,7 +113,7 @@ class MailMessageActivity: AppCompatActivity() {
                 val dateFormatted = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyy").parse(dateString!!)
                 Log.i(TAG,dateFormatted.toString())
 
-                var calendar = Calendar.getInstance()
+                val calendar = Calendar.getInstance()
                 calendar.clear()
                 calendar.set(dateFormatted.year+1900,dateFormatted.month,dateFormatted.date,dateFormatted.hours,dateFormatted.minutes)
 

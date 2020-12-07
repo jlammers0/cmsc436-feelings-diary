@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="IconDipSize">
+        <ignore path="src/main/res/mipmap-hdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-mdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxhdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxxhdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxxhdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxxhdpi/feelings_diary_icon.png" />
+    </issue>
+    <issue id="IconDuplicatesConfig">
+        <ignore path="src/main/res/drawable/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-hdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-mdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxhdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxxhdpi/feelings_diary_icon.png" />
+    </issue>
+    <issue id="IconLauncherShape">
+        <ignore path="src/main/res/mipmap-hdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-mdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-mdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-mdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxhdpi/feelings_diary_icon.png" />
+        <ignore path="src/main/res/mipmap-xxxhdpi/feelings_diary_icon.png" />
+    </issue>
+    <issue id="IconLocation">
+        <ignore path="src/main/res/drawable/add_patient_icon.png" />
+        <ignore path="src/main/res/drawable/angry_emoji.png" />
+        <ignore path="src/main/res/drawable/calendar_icon.png" />
+        <ignore path="src/main/res/drawable/feelings_diary_icon.png" />
+        <ignore path="src/main/res/drawable/laughing_emoji.png" />
+        <ignore path="src/main/res/drawable/logout_icon.png" />
+        <ignore path="src/main/res/drawable/mail_icon.png" />
+        <ignore path="src/main/res/drawable/neutral_emoji.png" />
+        <ignore path="src/main/res/drawable/settings_icon.png" />
+        <ignore path="src/main/res/drawable/slightly_smiling_emoji.png" />
+        <ignore path="src/main/res/drawable/unhappy_emoji.png" />
+        <ignore path="src/main/res/drawable/very_happy_emoji.png" />
+        <ignore path="src/main/res/drawable/very_sad_emoji.png" />
+    </issue>
+</lint>

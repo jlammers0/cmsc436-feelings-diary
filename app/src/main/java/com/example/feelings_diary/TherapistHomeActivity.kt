@@ -2,18 +2,15 @@ package com.example.feelings_diary
 
 import android.content.ContentUris
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 
 class TherapistHomeActivity : AppCompatActivity() {
 
@@ -21,7 +18,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var patientListView: ListView
     private lateinit var messageButton: Button
     private lateinit var aptButton: Button
-    private lateinit var queryButton: Button
+
     private lateinit var mailButton: ImageButton
     private lateinit var calendarButton: ImageButton
     private lateinit var addPatientButton: ImageButton
@@ -48,7 +45,7 @@ class TherapistHomeActivity : AppCompatActivity() {
         checkInButton = findViewById(R.id.checkInButton)
         messageButton = findViewById(R.id.messageButton)
         aptButton = findViewById(R.id.aptButton)
-        queryButton = findViewById(R.id.queryButton)
+
         mailButton = findViewById(R.id.therapistMailButton)
         calendarButton = findViewById(R.id.therapistCalendarButton)
         addPatientButton = findViewById(R.id.therapistAddPatientButton)
@@ -170,16 +167,7 @@ class TherapistHomeActivity : AppCompatActivity() {
 
         }
 
-        queryButton.setOnClickListener{
-            //TODO: allow therapist to query all their patient check-ins. will interact with firebase to find check in data
-            //need to create activity for this. should have spinner to query by different criteria
-            //feeling range will be an integer matching patient check in slider values
-            //keyword will search through diary entry object comments
-            //query by patient not necessary as this ability is already allowed in the therapist home screen
-            //this will not require a patient to be selected from patient list
 
-
-        }
 
         logoutButton.setOnClickListener{
             mAuth!!.signOut()
@@ -365,7 +353,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                         }catch (e:Exception){
                             Log.e(TAG,e.toString())
                         }finally{
-                            for (y in prospectivePatients!!){
+                            for (y in prospectivePatients){
                                 if(user!!.uid == y.uid){
                                     prospectivePatients.remove(user)
                                     mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()

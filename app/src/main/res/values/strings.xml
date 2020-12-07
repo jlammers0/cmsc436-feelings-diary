@@ -12,6 +12,7 @@
         <item name="MESSAGE">Message</item>
         <item name="REQUEST">Meeting Request</item>
     </array>
+
     <string name="title_app_name">Feelings Diary</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
@@ -30,11 +31,9 @@
     <string name="view_check_ins">View Check-Ins</string>
     <string name="message">Message</string>
     <string name="schedule_appointment">Schedule Appointment</string>
-    <string name="query_patient_check_ins">Query Patient Check-Ins</string>
     <string name="feelings_illustration">feelings illustration</string>
     <string name="add_a_comment_to_this_check_in">Add a comment to this check in</string>
     <string name="today_i_am_feeling">Today I am feeling:</string>
-    <string name="add_a_patient_please_enter_patient_email">Add a patient. Please enter patient email</string>
     <string name="add_patient">Add Patient</string>
     <string name="pending_patient_requests">Pending patient requests</string>
     <string name="ignore_patient_request">Ignore Patient Request</string>
@@ -46,7 +45,6 @@
     <string name="save_check_in">Save Check-In</string>
     <string name="search_by_selection">Search by selection</string>
     <string name="inbox">Inbox</string>
-    <string name="tap_to_expand">Tap to Expand</string>
     <string name="reply">Reply</string>
     <string name="delete_message">Delete Message</string>
     <string name="your_previous_check_ins">Your Previous Check-Ins</string>
@@ -57,4 +55,29 @@
     <string name="back_to_home_screen">Back to Home Screen</string>
     <string name="therapist_comment">Therapist Comment</string>
     <string name="test_string">Test String</string>
+    <string name="fill_search_criteria">Fill search Criteria</string>
+    <string name="login_icon">Login Icon</string>
+    <string name="username">Username</string>
+    <string name="i_am_registering_as_a">I am registering as a:</string>
+    <string name="to">To:</string>
+    <string name="message_subject">Message Subject</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_message">New Message</string>
+    <string name="your_happiness_score">Your happiness score:</string>
+    <string name="score_text">Score Text</string>
+    <string name="therapist_comment_here">Therapist Comment Here</string>
+    <string name="save_comment">Save Comment</string>
+
+    <string name="message_body">Message Body</string>
+
+
+    <string name="replying_to">Replying to:</string>
+    <string name="view_check_ins_on_selected_date">View Check Ins on Selected Date</string>
+    <string name="patient_notifications_list">Patient Notifications List</string>
+    <string name="add_a_notification">add a notification</string>
+    <string name="click_on_a_notification_to_remove_it">Click on a notification to remove it</string>
+    <string name="remove_therapist">Remove Therapist</string>
+    <string name="remove_patient">Remove Patient</string>
+    <string name="subscribed_patient_list">Subscribed Patient List</string>
 </resources>

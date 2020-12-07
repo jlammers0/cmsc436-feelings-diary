@@ -261,14 +261,14 @@ class PatientHomeActivity : AppCompatActivity() {
 
 
 
-                    if (findTherapistByEmail.text.toString().isNullOrEmpty()) {
+                    if (findTherapistByEmail.text.toString().isEmpty()) {
                         Toast.makeText(
                             applicationContext,
                             "Select a therapist from the list or enter therapist email manually",
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    var existsFlag = false;
+                    var existsFlag = false
                     for (therapist in therapistList as ArrayList<User>) {
                         if (therapist.email == findTherapistByEmail.text.toString()) {
                             existsFlag = true
