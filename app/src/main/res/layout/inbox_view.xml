@@ -11,30 +11,32 @@
     >
 
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
+
 
     <Spinner
         android:id="@+id/autoCompleteCriteria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/autoCompleteView"
+
         android:entries="@array/searchCriteria" />
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/autoCompleteCriteria"
+        />
 
     <Button
         android:id="@+id/searchButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/autoCompleteCriteria"
+        android:layout_below="@id/autoCompleteView"
         android:text="@string/search_by_selection" />
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:id="@+id/composeButton"
-        android:layout_below="@id/autoCompleteCriteria"
+        android:layout_below="@id/autoCompleteView"
         android:layout_toEndOf="@id/searchButton"
         android:text="New Message"
         />

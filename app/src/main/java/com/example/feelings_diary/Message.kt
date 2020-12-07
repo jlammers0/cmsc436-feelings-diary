@@ -8,6 +8,7 @@ data class Message(
     val to: String = "",
     val messageType: MessageType = MessageType.MESSAGE,
     val subject: String = "",
-    val body: String =""
+    val body: String ="",
+    val meeting:String = ""
 
 )

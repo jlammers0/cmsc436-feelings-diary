@@ -1,10 +1,10 @@
 package com.example.feelings_diary
 
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.format.DateFormat
@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.auth.FirebaseAuth
@@ -35,10 +36,15 @@ class PatientHomeActivity : AppCompatActivity() {
     private var uid:String? = null
     private var uemail:String? = null
     private var therapistList:MutableList<User>? = null
+    private var patientNotificationList: MutableList<PatientNotification>? = null
     private var databaseTherapists: DatabaseReference? = null
+    private var users:MutableList<User>? = null
+    private var databasePatients: DatabaseReference? = null
+    private var personalTherapist: String? = null
     private var curUser: User? = null
 
     private var therapistAdapter: ArrayAdapter<User>? = null
+    private var notificationAdapter : ArrayAdapter<PatientNotification>? = null
 
 
 
@@ -61,9 +67,13 @@ class PatientHomeActivity : AppCompatActivity() {
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
 
+        databasePatients = FirebaseDatabase.getInstance().getReference("patients")
 
 
+
+        users = ArrayList()
         therapistList = ArrayList()
+        patientNotificationList = ArrayList()
         databaseTherapists = FirebaseDatabase.getInstance().getReference("therapists")
 
 
@@ -93,6 +103,7 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
         settingsButton!!.setOnClickListener{
+            Log.i(TAG,"SettingsButton clicked")
             //TODO: create reminders to check in and option to delete account
             //patient settings will no longer add therapist we have add therapist button for this
             //patient settings will need to be able to show and remove connected therapist
@@ -104,116 +115,215 @@ class PatientHomeActivity : AppCompatActivity() {
             dialogBuilder.setView(dialogView)
 
             // Get Fragment Buttons
-            val deleteButton = dialogView.findViewById<Button>(R.id.deleteButton)
-            val removeTherapistButton = dialogView.findViewById<Button>(R.id.removeTherapistButton)
+            val addNotificationButton = dialogView.findViewById<View>(R.id.addNotificationButton) as Button
+            val removeTherapistButton = dialogView.findViewById<View>(R.id.removeTherapistButton) as Button
+            val removeNotificationsButton = dialogView.findViewById<View>(R.id.removeNotificationButton) as Button
+            val theruname = dialogView.findViewById<View>(R.id.theruname) as TextView
+            val theremail = dialogView.findViewById<View>(R.id.theremail) as TextView
+            val patientNotificationListView = dialogView.findViewById<ListView>(R.id.patientNotificationsList)
 
-            // Onclick for delete user button
-            deleteButton.setOnClickListener {
-                // Get current user
-                val currentUser = mAuth!!.currentUser
+            dialogBuilder.setTitle("Patient Settings")
+            val b = dialogBuilder.create()
 
-                try {
-                    // Delete account
-                    currentUser!!.delete()
+            b.show()
+            Log.i(TAG,"DialogBuilder should be showing")
 
-                    // Notify user that account has been deleted
-                    Toast.makeText(this, "You have successfully deleted your account.", Toast.LENGTH_LONG)
 
-                    // Go back to main activity
-                    startActivity(Intent(this, MainActivity::class.java))
-                } catch (e: Exception) {
-                    // Notify user that account couldn't be deleted
-                    Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_LONG)
+            // Initialize notification list's adapter
+            notificationAdapter = PatientNotificationList(this,
+                (patientNotificationList as List<PatientNotification>))
+            patientNotificationListView.adapter = notificationAdapter
+
+
+            if (!personalTherapist.isNullOrEmpty()) {
+                for (x in users!!) {
+                    if (x.uid == personalTherapist!!) {
+                        theruname.text = x.uname
+                        theremail.text = x.email
+
+                    }
                 }
+            }
+
+            // OnClick for add notification button
+            addNotificationButton.setOnClickListener {
+                // Get refs to time and date pickers
+                val datePicker = DatePickerFragment(this)
+                val timePicker = TimePickerFragment()
+
+                // Show date and time pickers
+                datePicker.show(supportFragmentManager, "Date selection")
+                timePicker.show(supportFragmentManager, "Time Selection")
+
+                // Convert user selection into PatientNotification()
+                val newNotification = PatientNotification(
+                    datePicker.mYear,
+                    datePicker.mMonth,
+                    datePicker.mDay,
+                    timePicker.mHour,
+                    timePicker.mMinute
+                )
+
+                // Add new notification to list and notify adapter
+                (patientNotificationList as ArrayList).add(newNotification)
+                (notificationAdapter as PatientNotificationList).notifyDataSetChanged()
+
+                // Create pending intent for notification
+                val notIntent = Intent(this, LoginActivity::class.java)
+                val pendingIntent = PendingIntent.getActivity(this, 0, notIntent, 0)
+
+                // Get reference to notification builder
+                var builder = NotificationCompat.Builder(this, CHAN_ID)
+                    .setContentTitle("Check-In Reminder")
+                    .setContentText("This is a reminder that you have a check-in!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+
+                // TODO add support for scheduled notifications
+            }
+
+            // OnClick for remove notification button
+            removeNotificationsButton.setOnClickListener {
+                val currentNot = patientNotificationListView.selectedItem as PatientNotification
+
+                (patientNotificationList as ArrayList<PatientNotification>).remove(currentNot)
+
+                val adapter = patientNotificationListView.adapter
+                (adapter as ArrayAdapter<PatientNotification>).notifyDataSetChanged()
+
+                // TODO remove scheduled notification
             }
 
             // Onclick for remove therapist button
             removeTherapistButton.setOnClickListener {
-                // TODO Figure out a way to remove a therapist from this patient's list
-                // Maybe have a therapist ListView in this fragment??
+                if (personalTherapist.isNullOrEmpty()){
+                    Toast.makeText(applicationContext,"You do not have a connected therapist to remove",Toast.LENGTH_SHORT).show()
+                }else{
+                    databasePatients!!.child(personalTherapist!!).child(uid!!).removeValue()
+                }
+
+                b.dismiss()
             }
+
+
         }
 
         calendarButton!!.setOnClickListener{
-            // Get reference to fragment manager
-            val manager = supportFragmentManager
 
-            // Show Date picker
-            DatePickerFragment(this, manager).show(manager, "Patient Date Picker")
+
+
+
+            val calendarEventTime = System.currentTimeMillis()
+
+            val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+            ContentUris.appendId(builder,calendarEventTime)
+            val uri = builder.build()
+            val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+            startActivity(intent)
+
         }
 
 
         logoutButton!!.setOnClickListener{
             mAuth!!.signOut()
             Toast.makeText(applicationContext,"You have been successfully logged out", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this@PatientHomeActivity,MainActivity::class.java).putExtra(USER_ID,
-                mAuth!!.currentUser!!.uid))
+            startActivity(Intent(this@PatientHomeActivity,MainActivity::class.java))
         }
 
         patientAddTherapistButton!!.setOnClickListener{
 
-            val dialogBuilder = AlertDialog.Builder(this)
-            val inflater = layoutInflater
-            val dialogView = inflater.inflate(R.layout.patient_find_therapist,null)
-            dialogBuilder.setView(dialogView)
+            if(personalTherapist.isNullOrEmpty()) {
 
-            val enrolledTherapistListView = dialogView.findViewById<View>(R.id.enrolledTherapistList) as ListView
-            val findTherapistByEmail = dialogView.findViewById<View>(R.id.findTherapistByEmail) as EditText
-            val requestTherapistButton = dialogView.findViewById<View>(R.id.requestTherapistButton) as Button
+                val dialogBuilder = AlertDialog.Builder(this)
+                val inflater = layoutInflater
+                val dialogView = inflater.inflate(R.layout.patient_find_therapist, null)
+                dialogBuilder.setView(dialogView)
 
-
-
-            therapistAdapter = ProspectiveTherapistList(this,
-                therapistList as ArrayList<User>
-            )
-            enrolledTherapistListView.adapter = therapistAdapter
-
-            dialogBuilder.setTitle("Find therapist")
-            val b = dialogBuilder.create()
-
-            b.show()
-            for(therapist in therapistList as ArrayList<User>) {
-                Log.i(TAG, "therapistList contains ${therapist.email}")
-            }
-
-            //not sure why this cast is needed. might have something to do with being set to null at first
-            //and not declared as lateinit
-            enrolledTherapistListView.onItemClickListener = AdapterView.OnItemClickListener{_,_,i,_ ->
-                findTherapistByEmail.setText(therapistList!![i].email)
-
-            }
+                val enrolledTherapistListView =
+                    dialogView.findViewById<View>(R.id.enrolledTherapistList) as ListView
+                val findTherapistByEmail =
+                    dialogView.findViewById<View>(R.id.findTherapistByEmail) as EditText
+                val requestTherapistButton =
+                    dialogView.findViewById<View>(R.id.requestTherapistButton) as Button
 
 
 
+                therapistAdapter = ProspectiveTherapistList(
+                    this,
+                    therapistList as ArrayList<User>
+                )
+                enrolledTherapistListView.adapter = therapistAdapter
 
-            requestTherapistButton.setOnClickListener {
+                dialogBuilder.setTitle("Find therapist")
+                val b = dialogBuilder.create()
 
-
-
-
-                if (findTherapistByEmail.text.toString().isNullOrEmpty()){
-                    Toast.makeText(applicationContext,"Select a therapist from the list or enter therapist email manually",Toast.LENGTH_LONG).show()
+                b.show()
+                for (therapist in therapistList as ArrayList<User>) {
+                    Log.i(TAG, "therapistList contains ${therapist.email}")
                 }
-                var existsFlag = false;
-                for (therapist in therapistList as ArrayList<User>){
-                    if (therapist.email == findTherapistByEmail.text.toString()){
-                        existsFlag =true
-                        FirebaseDatabase.getInstance().reference.child("prospectivePatients").child(therapist.uid).child(uid!!).setValue(curUser)
+
+                //not sure why this cast is needed. might have something to do with being set to null at first
+                //and not declared as lateinit
+                enrolledTherapistListView.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, i, _ ->
+                        findTherapistByEmail.setText(therapistList!![i].email)
+
                     }
+
+
+
+
+                requestTherapistButton.setOnClickListener {
+
+                    for (user in users!!) {
+                        if (user.email == uemail) {
+                            curUser = user
+                        }
+                    }
+
+
+
+
+                    if (findTherapistByEmail.text.toString().isNullOrEmpty()) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Select a therapist from the list or enter therapist email manually",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    var existsFlag = false;
+                    for (therapist in therapistList as ArrayList<User>) {
+                        if (therapist.email == findTherapistByEmail.text.toString()) {
+                            existsFlag = true
+                            FirebaseDatabase.getInstance().reference.child("prospectivePatients")
+                                .child(therapist.uid).child(uid!!).setValue(curUser)
+                        }
+                    }
+                    if (existsFlag) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Therapist has been sent a patient request",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            applicationContext,
+                            "Therapist was not found",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                    //TODO request therapist
+
+                    b.dismiss()
+
                 }
-                if (existsFlag){
-                    Toast.makeText(applicationContext,"Therapist has been sent a patient request",Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(applicationContext,"Therapist was not found",Toast.LENGTH_LONG).show()
-                }
-
-                //TODO request therapist
-
-                b.dismiss()
-
+            }else{
+                Toast.makeText(applicationContext,"You cannot add more than one therapist",Toast.LENGTH_SHORT).show()
             }
 
-            //TODO: build therapist list and add node to firebase connecting patients and therapists
+
         }
 
         mailButton!!.setOnClickListener{
@@ -231,12 +341,15 @@ class PatientHomeActivity : AppCompatActivity() {
             ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                var temp:User? = null
                 for (data in snapshot.children){
-                    val temp = data.getValue(User::class.java)
-                    if (temp!!.email == uemail!!){
-                        curUser=temp
 
+                    try {
+                        temp = data.getValue(User::class.java)
+                    }catch (e:Exception){
+                        Log.e(TAG,e.toString())
+                    }finally{
+                        users!!.add(temp!!)
                     }
                 }
             }
@@ -271,21 +384,52 @@ class PatientHomeActivity : AppCompatActivity() {
                 Log.i(TherapistHomeActivity.TAG, "loading patients was canceled")
             }
         })
+        databasePatients!!.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                personalTherapist = ""
+                var user: User? = null
+                for (data in snapshot.children){
+                    for (x in data.children){
+                        try {
+                            user = x.getValue(User::class.java)
+                        }catch (e:Exception){
+                            Log.e(TAG,e.toString())
+                        }finally{
+                            if (user!!.uid == uid){
+                                personalTherapist = data.key!!
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     companion object{
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
+
         const val DATE_SELECTED = "date selected"
+
+        const val CHAN_ID = "feelings-diary-id"
+
     }
 }
 
 /* Date Picker for calendar support*/
-private class DatePickerFragment(context: Context, manager: FragmentManager) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+private class DatePickerFragment(context: Context) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private val mContext = context
-    private val mManager = manager
+
+    var mYear: Int = 0
+    var mMonth: Int = 0
+    var mDay: Int = 0
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker
@@ -299,24 +443,8 @@ private class DatePickerFragment(context: Context, manager: FragmentManager) : D
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-        val tPicker = TimePickerFragment()
-
-        // Show Time Picker
-        tPicker.show(mManager, "Patient Time Picker")
-
-        // Get picked time in milliseconds
-        val time = Calendar.getInstance().run {
-            set(year, month, day, tPicker.mHour, tPicker.mMinute)
-            timeInMillis
-        }
-
-        // Start calendar activity
-        val calIntent = Intent(Intent.ACTION_INSERT)
-            .setData(CalendarContract.Events.CONTENT_URI)
-            .putExtra(CalendarContract.Events.TITLE, "Patient Check-In")
-            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, time)
-
-        startActivity(calIntent)
+        // Set date
+        mYear = year; mMonth = month; mDay = day;
     }
 }
 
