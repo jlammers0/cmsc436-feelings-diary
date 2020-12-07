@@ -104,6 +104,7 @@ class PatientHomeActivity : AppCompatActivity() {
             // Get Fragment Buttons
             val addNotificationButton = dialogView.findViewById<View>(R.id.addNotificationButton) as Button
             val removeTherapistButton = dialogView.findViewById<View>(R.id.removeTherapistButton) as Button
+            val removeNotificationsButton = dialogView.findViewById<View>(R.id.removeNotificationButton) as Button
             val theruname = dialogView.findViewById<View>(R.id.theruname) as TextView
             val theremail = dialogView.findViewById<View>(R.id.theremail) as TextView
             val patientNotificationListView = dialogView.findViewById<ListView>(R.id.patientNotificationsList)

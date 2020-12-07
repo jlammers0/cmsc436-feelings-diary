@@ -36,6 +36,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var patients: MutableList<User>
     private lateinit var prospectivePatients: MutableList<User>
     private var selectedPatient: User? = null
+    private var hasTherapist = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,7 +127,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                 }
                 b.dismiss()
             }
-            
+
 
 
         }
@@ -343,6 +344,33 @@ class TherapistHomeActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.i(TAG, "loading patients was canceled")
+            }
+        })
+
+        FirebaseDatabase.getInstance().getReference("patients").addValueEventListener(object:ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var user: User? = null
+                for (data in snapshot.children){
+                    for (x in data.children){
+                        try{
+                            user = x.getValue(User::class.java)
+                        }catch (e:Exception){
+                            Log.e(TAG,e.toString())
+                        }finally{
+                            for (y in prospectivePatients!!){
+                                if(user!!.uid == y.uid){
+                                    prospectivePatients.remove(user)
+                                    mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
             }
         })
     }

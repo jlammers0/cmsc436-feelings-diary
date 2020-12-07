@@ -31,6 +31,12 @@
         android:text="add a notification"
         android:id="@+id/addNotificationButton"
         android:layout_gravity="center_horizontal"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="remove a notification"
+        android:id="@+id/removeNotificationButton"
+        android:layout_gravity="center_horizontal"/>
     <TextView
         android:id="@+id/theremail"
         android:layout_width="wrap_content"
