@@ -12,6 +12,7 @@
         <item name="MESSAGE">Message</item>
         <item name="REQUEST">Meeting Request</item>
     </array>
+
     <string name="title_app_name">Feelings Diary</string>
     <string name="register">Register</string>
     <string name="login">Login</string>

@@ -21,7 +21,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var patientListView: ListView
     private lateinit var messageButton: Button
     private lateinit var aptButton: Button
-    private lateinit var queryButton: Button
+    
     private lateinit var mailButton: ImageButton
     private lateinit var calendarButton: ImageButton
     private lateinit var addPatientButton: ImageButton
@@ -48,7 +48,7 @@ class TherapistHomeActivity : AppCompatActivity() {
         checkInButton = findViewById(R.id.checkInButton)
         messageButton = findViewById(R.id.messageButton)
         aptButton = findViewById(R.id.aptButton)
-        queryButton = findViewById(R.id.queryButton)
+
         mailButton = findViewById(R.id.therapistMailButton)
         calendarButton = findViewById(R.id.therapistCalendarButton)
         addPatientButton = findViewById(R.id.therapistAddPatientButton)
@@ -170,16 +170,7 @@ class TherapistHomeActivity : AppCompatActivity() {
 
         }
 
-        queryButton.setOnClickListener{
-            //TODO: allow therapist to query all their patient check-ins. will interact with firebase to find check in data
-            //need to create activity for this. should have spinner to query by different criteria
-            //feeling range will be an integer matching patient check in slider values
-            //keyword will search through diary entry object comments
-            //query by patient not necessary as this ability is already allowed in the therapist home screen
-            //this will not require a patient to be selected from patient list
 
-
-        }
 
         logoutButton.setOnClickListener{
             mAuth!!.signOut()
