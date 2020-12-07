@@ -36,8 +36,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/newMailBody"
         android:hint="Message Body"
-        android:inputType="text"
-        android:autofillHints="" />
+        android:inputType="textMultiLine"
+        android:lines="10"
+        android:minLines="10"
+        android:gravity="top|left"
+        android:maxLines="10"
+        android:scrollbars="vertical"  />
     <Button
         android:id="@+id/sendButton"
         android:layout_width="match_parent"

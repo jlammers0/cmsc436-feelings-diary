@@ -31,7 +31,7 @@ class MailMessage (private val context: Activity, private var mail: List<Message
         mailDateView.text = message.date
         mailFromView.text = newmFrom
         mailTypeView.text = newmType
-        mailSubjectView.text = mSubject
+        mailSubjectView.text = newmSubject
 
         return listViewItem
 

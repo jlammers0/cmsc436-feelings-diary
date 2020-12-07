@@ -146,7 +146,7 @@ class NewMessageActivity:AppCompatActivity(),DatePickerDialog.OnDateSetListener,
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         myHour = hourOfDay
         myMinute = minute
-        meetDate = Date(myYear,myMonth,myDay,myHour,myMinute).toString()
+        meetDate = Date(myYear-1900,myMonth,myDay,myHour,myMinute).toString()
     }
 
     override fun onStart() {

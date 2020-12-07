@@ -1,7 +1,9 @@
 package com.example.feelings_diary
 
+import android.content.ContentUris
 import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
@@ -9,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MailMessageActivity: AppCompatActivity() {
@@ -43,12 +46,21 @@ class MailMessageActivity: AppCompatActivity() {
         uemail = intent.getStringExtra(USER_EMAIL)
 
 
-
-        mailDateView!!.text = intent.getStringExtra("date")
-        mailFromView!!.text = intent.getStringExtra("from")
-        mailTypeView!!.text = intent.getStringExtra("type")
-        mailSubjectView!!.text = intent.getStringExtra("subject")
-        mailBodyView!!.text = intent.getStringExtra("body")
+        val mDate = intent.getStringExtra("date")
+        val displayDate = "Date: $mDate"
+        val mFrom = intent.getStringExtra("from")
+        val displayFrom = "From: $mFrom"
+        val mType = intent.getStringExtra("type")
+        var displayType = "Type: $mType"
+        val mSubject = intent.getStringExtra("subject")
+        val displaySubject = "Subject: $mSubject"
+        val mBody = intent.getStringExtra("body")
+        val displayBody = "Body: $mBody"
+        mailDateView!!.text = displayDate
+        mailFromView!!.text = displayFrom
+        mailTypeView!!.text = displayType
+        mailSubjectView!!.text = displaySubject
+        mailBodyView!!.text = displayBody
 
         deleteButton!!.setOnClickListener{
             val date = intent.getStringExtra("date")
@@ -93,6 +105,33 @@ class MailMessageActivity: AppCompatActivity() {
             scheduleMeetingButton.text = "Add meeting to calendar"
             scheduleMeetingButton.setOnClickListener{
                 // TODO: Add to google calendar https://itnext.io/android-calendar-intent-8536232ecb38
+                val fromUid = intent.getStringExtra("from")
+                val dateString = intent.getStringExtra("meeting")
+                val dateFormatted = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyy").parse(dateString!!)
+                Log.i(TAG,dateFormatted.toString())
+
+                var calendar = Calendar.getInstance()
+                calendar.clear()
+                calendar.set(dateFormatted.year+1900,dateFormatted.month,dateFormatted.date,dateFormatted.hours,dateFormatted.minutes)
+
+                Log.i(TAG,calendar.toString())
+
+
+                val insertCalendarIntent = Intent(Intent.ACTION_INSERT).setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.Events.TITLE, "Therapy Meeting with $fromUid")
+                    .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,calendar.timeInMillis) // Only date part is considered when ALL_DAY is true; Same as DTSTART
+                    .putExtra(CalendarContract.Events.DESCRIPTION, intent.getStringExtra("body")) // Description
+                    .putExtra(Intent.EXTRA_EMAIL, fromUid)
+
+                startActivity(insertCalendarIntent)
+                val calendarEventTime = System.currentTimeMillis()
+
+                val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+                ContentUris.appendId(builder,calendarEventTime)
+                val uri = builder.build()
+                val intent = Intent(Intent.ACTION_VIEW).setData(uri)
+                startActivity(intent)
             }
             layout.addView(scheduleMeetingButton)
         }

@@ -65,11 +65,21 @@ TimePickerDialog.OnTimeSetListener {
         meetDate = ""
 
 
-        mailDateView!!.text = intent.getStringExtra("date")
-        mailFromView!!.text = intent.getStringExtra("from")
-        mailTypeView!!.text = intent.getStringExtra("type")
-        mailSubjectView!!.text = intent.getStringExtra("subject")
-        mailBodyView!!.text = intent.getStringExtra("body")
+        val mDate = intent.getStringExtra("date")
+        val displayDate = "Date: $mDate"
+        val mFrom = intent.getStringExtra("from")
+        val displayFrom = "From: $mFrom"
+        val mType = intent.getStringExtra("type")
+        var displayType = "Type: $mType"
+        val mSubject = intent.getStringExtra("subject")
+        val displaySubject = "Subject: $mSubject"
+        val mBody = intent.getStringExtra("body")
+        val displayBody = "Body: $mBody"
+        mailDateView!!.text = displayDate
+        mailFromView!!.text = displayFrom
+        mailTypeView!!.text = displayType
+        mailSubjectView!!.text = displaySubject
+        mailBodyView!!.text = displayBody
 
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
@@ -77,7 +87,7 @@ TimePickerDialog.OnTimeSetListener {
         rspMailToView!!.text = intent.getStringExtra("from")
         rspMailDateView!!.text = Date(System.currentTimeMillis()).toString()
 
-        val oldSubject = mailSubjectView!!.text.toString()
+        val oldSubject = intent.getStringExtra("subject")
         val newSubject = "RE: $oldSubject"
         rspMailSubjectView!!.setText(newSubject)
 
@@ -152,6 +162,8 @@ TimePickerDialog.OnTimeSetListener {
         myMonth = month
         val calendar: Calendar = Calendar.getInstance()
 
+        Log.i(TAG,"MY year = ${myYear}")
+
         val timePickerDialog = TimePickerDialog(this@MailReplyActivity, this@MailReplyActivity, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
             false)
         timePickerDialog.show()
@@ -159,7 +171,9 @@ TimePickerDialog.OnTimeSetListener {
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         myHour = hourOfDay
         myMinute = minute
-        meetDate = Date(myYear,myMonth,myDay,myHour,myMinute).toString()
+
+        meetDate = Date(myYear-1900,myMonth,myDay,myHour,myMinute).toString()
+
     }
 
     override fun onStart() {
