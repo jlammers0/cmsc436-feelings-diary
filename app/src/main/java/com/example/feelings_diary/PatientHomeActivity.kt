@@ -4,8 +4,8 @@ import android.app.*
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.provider.CalendarContract
 import android.text.format.DateFormat
 import android.util.Log
@@ -117,7 +117,6 @@ class PatientHomeActivity : AppCompatActivity() {
             // Get Fragment Buttons
             val addNotificationButton = dialogView.findViewById<View>(R.id.addNotificationButton) as Button
             val removeTherapistButton = dialogView.findViewById<View>(R.id.removeTherapistButton) as Button
-            val removeNotificationsButton = dialogView.findViewById<View>(R.id.removeNotificationButton) as Button
             val theruname = dialogView.findViewById<View>(R.id.theruname) as TextView
             val theremail = dialogView.findViewById<View>(R.id.theremail) as TextView
             val patientNotificationListView = dialogView.findViewById<ListView>(R.id.patientNotificationsList)
@@ -134,6 +133,12 @@ class PatientHomeActivity : AppCompatActivity() {
                 (patientNotificationList as List<PatientNotification>))
             patientNotificationListView.adapter = notificationAdapter
 
+            // Set onItemClickListener
+            patientNotificationListView.setOnItemClickListener { _, _, i, _ ->
+                (patientNotificationList as ArrayList<PatientNotification>).removeAt(i)
+                (patientNotificationListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+            }
+
 
             if (!personalTherapist.isNullOrEmpty()) {
                 for (x in users!!) {
@@ -147,52 +152,13 @@ class PatientHomeActivity : AppCompatActivity() {
 
             // OnClick for add notification button
             addNotificationButton.setOnClickListener {
-                // Get refs to time and date pickers
-                val datePicker = DatePickerFragment(this)
-                val timePicker = TimePickerFragment()
+                // Get ref to date picker - most of the work for this process will be done in that class
+                val datePicker = DatePickerFragment(this,
+                    patientNotificationList as ArrayList<PatientNotification>, patientNotificationListView,
+                    supportFragmentManager)
 
                 // Show date and time pickers
-                datePicker.show(supportFragmentManager, "Date selection")
-                timePicker.show(supportFragmentManager, "Time Selection")
-
-                // Convert user selection into PatientNotification()
-                val newNotification = PatientNotification(
-                    datePicker.mYear,
-                    datePicker.mMonth,
-                    datePicker.mDay,
-                    timePicker.mHour,
-                    timePicker.mMinute
-                )
-
-                // Add new notification to list and notify adapter
-                (patientNotificationList as ArrayList).add(newNotification)
-                (notificationAdapter as PatientNotificationList).notifyDataSetChanged()
-
-                // Create pending intent for notification
-                val notIntent = Intent(this, LoginActivity::class.java)
-                val pendingIntent = PendingIntent.getActivity(this, 0, notIntent, 0)
-
-                // Get reference to notification builder
-                var builder = NotificationCompat.Builder(this, CHAN_ID)
-                    .setContentTitle("Check-In Reminder")
-                    .setContentText("This is a reminder that you have a check-in!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true)
-
-                // TODO add support for scheduled notifications
-            }
-
-            // OnClick for remove notification button
-            removeNotificationsButton.setOnClickListener {
-                val currentNot = patientNotificationListView.selectedItem as PatientNotification
-
-                (patientNotificationList as ArrayList<PatientNotification>).remove(currentNot)
-
-                val adapter = patientNotificationListView.adapter
-                (adapter as ArrayAdapter<PatientNotification>).notifyDataSetChanged()
-
-                // TODO remove scheduled notification
+                datePicker.showNow(supportFragmentManager, "Date selection")
             }
 
             // Onclick for remove therapist button
@@ -423,13 +389,19 @@ class PatientHomeActivity : AppCompatActivity() {
 }
 
 /* Date Picker for calendar support*/
-private class DatePickerFragment(context: Context) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment(
+    context: Context,
+    patientNotificationList: ArrayList<PatientNotification>,
+    patientNotificationListView: ListView,
+    manager: FragmentManager
+) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private val mContext = context
 
-    var mYear: Int = 0
-    var mMonth: Int = 0
-    var mDay: Int = 0
+    private val list = patientNotificationList
+    private val listView = patientNotificationListView
+
+    private val mManager = manager
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker
@@ -443,16 +415,28 @@ private class DatePickerFragment(context: Context) : DialogFragment(), DatePicke
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-        // Set date
-        mYear = year; mMonth = month; mDay = day;
+        // Start time picker
+        val timePicker = TimePickerFragment(year, month, day, list, listView, mContext)
+        timePicker.showNow(mManager, "Start time picker")
     }
 }
 
 /* Time Picker for Calendar Support */
-class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+class TimePickerFragment(
+    year: Int,
+    month: Int,
+    day: Int,
+    list: ArrayList<PatientNotification>,
+    listView: ListView,
+    context:Context
+) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
-    var mHour: Int = 0
-    var mMinute: Int = 0
+    private val mYear = year
+    private val mMonth = month
+    private val mDay = day
+    private val mList = list
+    private val mListView = listView
+    private val mContext = context
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current time as the default values for the picker
@@ -465,7 +449,54 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        mHour = hourOfDay
-        mMinute = minute
+        // Get delay from now until the selected time
+        val currentTime = Calendar.getInstance().timeInMillis
+        val futureTime = Calendar.getInstance().run {
+            set(mYear, mMonth, mDay, hourOfDay, minute)
+            timeInMillis
+        }
+
+        // Check if selected time and date is in the future
+        if (currentTime < futureTime) {
+            // Generate notification item
+            val notification = PatientNotification(mYear, mMonth, mDay, hourOfDay, minute)
+
+            // Update ListView
+            mList.add(notification)
+            (mListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+
+            // Set broadcast for notification
+            scheduleNotification(mContext, (futureTime - currentTime), 0)
+        } else {
+            Toast.makeText(context, "Selected time is in the Past!", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun scheduleNotification(context:Context, delay:Long, id:Int) {
+        // Create pending intent for notification
+        val notIntent = Intent(context, LoginActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, id, notIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        // Get reference to notification builder
+        val builder = NotificationCompat.Builder(context, PatientHomeActivity.CHAN_ID)
+            .setContentTitle("Check-In Reminder")
+            .setContentText("This is a reminder that you have a check-in!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        // Build the notification
+        val notification = builder.build()
+
+        // Create intent for broadcasting the time
+        val notificationIntent = Intent(context, NotificationReceiver::class.java)
+            .putExtra(NotificationReceiver.NOT_ID, id)
+            .putExtra(NotificationReceiver.NOT, notification)
+        val pendingReceiveIntent = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        // Initialize alarm manager to handle this intent
+        val futureTimeInMillis = SystemClock.elapsedRealtime() + delay
+        val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureTimeInMillis, pendingReceiveIntent)
     }
 }
