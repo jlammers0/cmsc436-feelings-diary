@@ -36,7 +36,6 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var patients: MutableList<User>
     private lateinit var prospectivePatients: MutableList<User>
     private var selectedPatient: User? = null
-    private var hasTherapist = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -178,6 +177,8 @@ class TherapistHomeActivity : AppCompatActivity() {
             //keyword will search through diary entry object comments
             //query by patient not necessary as this ability is already allowed in the therapist home screen
             //this will not require a patient to be selected from patient list
+
+
         }
 
         logoutButton.setOnClickListener{
