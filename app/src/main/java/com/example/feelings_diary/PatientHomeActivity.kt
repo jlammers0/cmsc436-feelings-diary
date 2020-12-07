@@ -4,6 +4,7 @@ import android.app.*
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.SystemClock
 import android.provider.CalendarContract
@@ -45,9 +46,6 @@ class PatientHomeActivity : AppCompatActivity() {
 
     private var therapistAdapter: ArrayAdapter<User>? = null
     private var notificationAdapter : ArrayAdapter<PatientNotification>? = null
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -135,8 +133,20 @@ class PatientHomeActivity : AppCompatActivity() {
 
             // Set onItemClickListener
             patientNotificationListView.setOnItemClickListener { _, _, i, _ ->
+                // Update ListView
                 (patientNotificationList as ArrayList<PatientNotification>).removeAt(i)
                 (patientNotificationListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+
+                // Create intent for broadcasting the time
+                val notificationIntent = Intent(this, NotificationReceiver::class.java)
+                notificationIntent.action = ACTION_NOTIFY
+                val pendingReceiveIntent = PendingIntent.getBroadcast(applicationContext, i, notificationIntent, PendingIntent.FLAG_NO_CREATE)
+
+                // Cancel recurring notifications
+                val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                if (pendingReceiveIntent != null) {
+                    manager.cancel(pendingReceiveIntent)
+                }
             }
 
 
@@ -385,6 +395,8 @@ class PatientHomeActivity : AppCompatActivity() {
 
         const val CHAN_ID = "feelings-diary-id"
 
+        const val ACTION_NOTIFY = "com.example.feelings_diary.NOTIFY"
+
     }
 }
 
@@ -416,7 +428,7 @@ class DatePickerFragment(
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
         // Start time picker
-        val timePicker = TimePickerFragment(year, month, day, list, listView, mContext)
+        val timePicker = TimePickerFragment(year, month, day, list, listView, mContext.applicationContext)
         timePicker.showNow(mManager, "Start time picker")
     }
 }
@@ -466,13 +478,13 @@ class TimePickerFragment(
             (mListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
 
             // Set broadcast for notification
-            scheduleNotification(mContext, (futureTime - currentTime), 0)
+            scheduleNotification(mContext, futureTime, 0)
         } else {
             Toast.makeText(context, "Selected time is in the Past!", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun scheduleNotification(context:Context, delay:Long, id:Int) {
+    private fun scheduleNotification(context:Context, time:Long, id:Int) {
         // Create pending intent for notification
         val notIntent = Intent(context, LoginActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(context, id, notIntent, PendingIntent.FLAG_CANCEL_CURRENT)
@@ -488,15 +500,17 @@ class TimePickerFragment(
         // Build the notification
         val notification = builder.build()
 
+        context.registerReceiver(NotificationReceiver(), IntentFilter(PatientHomeActivity.ACTION_NOTIFY))
+
         // Create intent for broadcasting the time
         val notificationIntent = Intent(context, NotificationReceiver::class.java)
             .putExtra(NotificationReceiver.NOT_ID, id)
             .putExtra(NotificationReceiver.NOT, notification)
-        val pendingReceiveIntent = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        notificationIntent.action = PatientHomeActivity.ACTION_NOTIFY
+        val pendingReceiveIntent = PendingIntent.getBroadcast(context, id, notificationIntent, 0)
 
         // Initialize alarm manager to handle this intent
-        val futureTimeInMillis = SystemClock.elapsedRealtime() + delay
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureTimeInMillis, pendingReceiveIntent)
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, time, AlarmManager.INTERVAL_DAY, pendingReceiveIntent)
     }
 }
