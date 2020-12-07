@@ -55,4 +55,6 @@
     <string name="date_string">Date String</string>
     <string name="comment_string">Comment String</string>
     <string name="back_to_home_screen">Back to Home Screen</string>
+    <string name="therapist_comment">Therapist Comment</string>
+    <string name="test_string">Test String</string>
 </resources>

@@ -44,6 +44,9 @@
         <activity android:name="com.example.feelings_diary.CheckInListActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.example.feelings_diary.TCICommentActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

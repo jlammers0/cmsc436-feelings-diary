@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" android:id="@+id/one_check">
 
     <TextView
         android:text="@string/date_of_entry"
@@ -30,5 +30,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/comment_string" />
+    <TextView
+        android:id="@+id/score_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:text="Your happiness score:"/>
+    <TextView
+        android:id="@+id/score_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:text="Score Text"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/therapist_title"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:visibility="gone"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/therapist_comment"
+        android:textAppearance ="@style/Base.TextAppearance.AppCompat.Medium"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/therapist_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint ="Therapist Comment Here"
+        android:visibility = "gone"
+        android:importantForAutofill="no"
+        android:inputType= "text" />
+    <Button
+        android:id="@+id/therapist_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Comment"
+        android:visibility = "gone"/>
 
 </LinearLayout>

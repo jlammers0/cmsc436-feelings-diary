@@ -5,18 +5,20 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
-import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CheckInListActivity : AppCompatActivity(){
+class TCICommentActivity : AppCompatActivity() {
     private var backButton: Button? = null
     private var uid: String? = null
     private var uemail:String? = null
-    private var sDateString:String? = null
-    private var selectedDate: Calendar? = null
+    private var puid: String? = null
+    private var puemail: String? = null
+    private var titleView: TextView? = null
+
     private var databaseDiary: DatabaseReference? = null
     private lateinit var diaryEntries: MutableList<DiaryEntry>
     private var checkListView: ListView? = null
@@ -24,22 +26,25 @@ class CheckInListActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.checkin_listview_patient)
+        setContentView(R.layout.checkin_listview_therapist)
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
-        sDateString = intent.getStringExtra(DATE_SELECTED)
-        checkListView = findViewById(R.id.listViewCheckIns)
-        selectedDate = Calendar.getInstance()
-        selectedDate!!.timeInMillis = sDateString!!.toLong()
+        puid = intent.getStringExtra(TherapistHomeActivity.CURR_PATIENT_ID)
+        puemail = intent.getStringExtra(TherapistHomeActivity.CURR_PATIENT_EMAIL)
 
-        backButton = findViewById(R.id.back_button)
+        checkListView = findViewById(R.id.tlistViewCheckIns)
 
+        titleView = findViewById(R.id.tscreen_title)
+
+        backButton = findViewById(R.id.tback_button)
         databaseDiary = FirebaseDatabase.getInstance().getReference("diary")
         diaryEntries = ArrayList()
+        titleView!!.text = "Patient's Check-Ins"
+
 
         backButton!!.setOnClickListener{
             startActivity(
-                Intent(this@CheckInListActivity, PatientHomeActivity::class.java).putExtra(
+                Intent(this@TCICommentActivity, TherapistHomeActivity::class.java).putExtra(
                     CheckInActivity.USER_ID, uid).putExtra(
                     CheckInActivity.USER_EMAIL, uemail)
             )
@@ -49,12 +54,12 @@ class CheckInListActivity : AppCompatActivity(){
     override fun onStart(){
         super.onStart()
 
-        databaseDiary!!.addValueEventListener(object: ValueEventListener{
+        databaseDiary!!.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 diaryEntries!!.clear()
-
+                Log.i(TAG, puid)
                 var entry: DiaryEntry? = null
-                for(data in snapshot.child(uid!!).children){
+                for(data in snapshot.child(puid!!).children){
                     try{
                         entry = data.getValue(DiaryEntry::class.java)
                     }catch(e:Exception){
@@ -64,18 +69,9 @@ class CheckInListActivity : AppCompatActivity(){
                     }
                 }
 
-                var daysEntries = ArrayList<DiaryEntry>()
-
-                for(ent in diaryEntries){
-
-                    var curCalDate = Calendar.getInstance()
-                    curCalDate.timeInMillis = ent.long_date
-                    if(selectedDate!!.get(Calendar.DAY_OF_YEAR) == curCalDate.get(Calendar.DAY_OF_YEAR) &&
-                            selectedDate!!.get(Calendar.YEAR) == curCalDate.get(Calendar.YEAR)){
-                        daysEntries.add(ent)
-                    }
-                }
-                val checkAdapter = CheckInAdapter(this@CheckInListActivity, daysEntries, null)
+                var sortedEntries = diaryEntries!!.sortedByDescending { it.long_date }
+                diaryEntries = sortedEntries.toMutableList()
+                val checkAdapter = CheckInAdapter(this@TCICommentActivity, diaryEntries, puid)
                 checkListView!!.adapter = checkAdapter
             }
 

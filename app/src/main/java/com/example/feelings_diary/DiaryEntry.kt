@@ -7,4 +7,4 @@ data class DiaryEntry (
     val feeling: Int = 0,
     val long_date: Long = 0,
     val comment: String = "",
-    val therapistComment: String = "")
+    var therapistComment: String = "")
