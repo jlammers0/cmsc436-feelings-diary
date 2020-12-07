@@ -37,6 +37,8 @@ class PatientHomeActivity : AppCompatActivity() {
     private var therapistList:MutableList<User>? = null
     private var databaseTherapists: DatabaseReference? = null
     private var users:MutableList<User>? = null
+    private var databasePatients: DatabaseReference? = null
+    private var personalTherapist: String? = null
     private var curUser: User? = null
 
     private var therapistAdapter: ArrayAdapter<User>? = null
@@ -60,6 +62,9 @@ class PatientHomeActivity : AppCompatActivity() {
         patientAddTherapistButton = findViewById(R.id.patientAddTherapistButton)
         uid = intent.getStringExtra(USER_ID)
         uemail = intent.getStringExtra(USER_EMAIL)
+
+        databasePatients = FirebaseDatabase.getInstance().getReference("patients")
+
 
 
         users = ArrayList()
@@ -97,8 +102,11 @@ class PatientHomeActivity : AppCompatActivity() {
             dialogBuilder.setView(dialogView)
 
             // Get Fragment Buttons
-            val deleteButton = dialogView.findViewById<View>(R.id.deleteUserButton) as Button
+            val addNotificationButton = dialogView.findViewById<View>(R.id.addNotificationButton) as Button
             val removeTherapistButton = dialogView.findViewById<View>(R.id.removeTherapistButton) as Button
+            val theruname = dialogView.findViewById<View>(R.id.theruname) as TextView
+            val theremail = dialogView.findViewById<View>(R.id.theremail) as TextView
+            val patientNotificationListView = dialogView.findViewById<ListView>(R.id.patientNotificationsList)
 
             dialogBuilder.setTitle("Patient Settings")
             val b = dialogBuilder.create()
@@ -106,50 +114,36 @@ class PatientHomeActivity : AppCompatActivity() {
             b.show()
             Log.i(TAG,"DialogBuilder should be showing")
 
-            // Get therapist list
-            val therapistListView = dialogView.findViewById<ListView>(R.id.patientTherapistList)
 
-            // Initialize adapter
-            therapistAdapter = ProspectiveTherapistList(this,
-                therapistList as ArrayList<User>
-            )
-            therapistListView.adapter = therapistAdapter
 
-            // Onclick for delete user button
-            deleteButton.setOnClickListener {
-                // Get current user
-                val currentUser = mAuth!!.currentUser
 
-                try {
-                    // Delete account
-                    currentUser!!.delete()
+            if (!personalTherapist.isNullOrEmpty()) {
+                for (x in users!!) {
+                    if (x.uid == personalTherapist!!) {
+                        theruname.text = x.uname
+                        theremail.text = x.email
 
-                    // Notify user that account has been deleted
-                    Toast.makeText(this, "You have successfully deleted your account.", Toast.LENGTH_LONG).show()
-
-                    // Go back to main activity
-                    startActivity(Intent(this, MainActivity::class.java))
-                } catch (e: Exception) {
-                    // Notify user that account couldn't be deleted
-                    Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_LONG).show()
+                    }
                 }
-                b.dismiss()
             }
+
+
+
+
 
             // Onclick for remove therapist button
             removeTherapistButton.setOnClickListener {
+                if (personalTherapist.isNullOrEmpty()){
+                    Toast.makeText(applicationContext,"You do not have a connected therapist to remove",Toast.LENGTH_SHORT).show()
+                }else{
+                    databasePatients!!.child(personalTherapist!!).child(uid!!).removeValue()
+                }
 
                 // TODO Figure out a way to remove a therapist from this patient's list
                 // Maybe have a therapist ListView in this fragment??
 
 
-                if (therapistListView.selectedItem != null) {
-                    (therapistList as ArrayList<User>).remove(therapistListView.selectedItem)
-                    (therapistListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
-                } else {
-                    // Notify user to make a selection
-                    Toast.makeText(this, "No therapist selected!", Toast.LENGTH_LONG).show()
-                }
+
                 b.dismiss()
             }
 
@@ -157,6 +151,8 @@ class PatientHomeActivity : AppCompatActivity() {
         }
 
         calendarButton!!.setOnClickListener{
+
+
 
 
             val calendarEventTime = System.currentTimeMillis()
@@ -178,74 +174,97 @@ class PatientHomeActivity : AppCompatActivity() {
 
         patientAddTherapistButton!!.setOnClickListener{
 
-            val dialogBuilder = AlertDialog.Builder(this)
-            val inflater = layoutInflater
-            val dialogView = inflater.inflate(R.layout.patient_find_therapist,null)
-            dialogBuilder.setView(dialogView)
+            if(personalTherapist.isNullOrEmpty()) {
 
-            val enrolledTherapistListView = dialogView.findViewById<View>(R.id.enrolledTherapistList) as ListView
-            val findTherapistByEmail = dialogView.findViewById<View>(R.id.findTherapistByEmail) as EditText
-            val requestTherapistButton = dialogView.findViewById<View>(R.id.requestTherapistButton) as Button
+                val dialogBuilder = AlertDialog.Builder(this)
+                val inflater = layoutInflater
+                val dialogView = inflater.inflate(R.layout.patient_find_therapist, null)
+                dialogBuilder.setView(dialogView)
 
-
-
-            therapistAdapter = ProspectiveTherapistList(this,
-                therapistList as ArrayList<User>
-            )
-            enrolledTherapistListView.adapter = therapistAdapter
-
-            dialogBuilder.setTitle("Find therapist")
-            val b = dialogBuilder.create()
-
-            b.show()
-            for(therapist in therapistList as ArrayList<User>) {
-                Log.i(TAG, "therapistList contains ${therapist.email}")
-            }
-
-            //not sure why this cast is needed. might have something to do with being set to null at first
-            //and not declared as lateinit
-            enrolledTherapistListView.onItemClickListener = AdapterView.OnItemClickListener{_,_,i,_ ->
-                findTherapistByEmail.setText(therapistList!![i].email)
-
-            }
+                val enrolledTherapistListView =
+                    dialogView.findViewById<View>(R.id.enrolledTherapistList) as ListView
+                val findTherapistByEmail =
+                    dialogView.findViewById<View>(R.id.findTherapistByEmail) as EditText
+                val requestTherapistButton =
+                    dialogView.findViewById<View>(R.id.requestTherapistButton) as Button
 
 
 
+                therapistAdapter = ProspectiveTherapistList(
+                    this,
+                    therapistList as ArrayList<User>
+                )
+                enrolledTherapistListView.adapter = therapistAdapter
 
-            requestTherapistButton.setOnClickListener {
+                dialogBuilder.setTitle("Find therapist")
+                val b = dialogBuilder.create()
 
-                for(user in users!!){
-                    if (user.email == uemail){
-                        curUser = user
+                b.show()
+                for (therapist in therapistList as ArrayList<User>) {
+                    Log.i(TAG, "therapistList contains ${therapist.email}")
+                }
+
+                //not sure why this cast is needed. might have something to do with being set to null at first
+                //and not declared as lateinit
+                enrolledTherapistListView.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, i, _ ->
+                        findTherapistByEmail.setText(therapistList!![i].email)
+
                     }
-                }
 
 
 
 
-                if (findTherapistByEmail.text.toString().isNullOrEmpty()){
-                    Toast.makeText(applicationContext,"Select a therapist from the list or enter therapist email manually",Toast.LENGTH_LONG).show()
-                }
-                var existsFlag = false;
-                for (therapist in therapistList as ArrayList<User>){
-                    if (therapist.email == findTherapistByEmail.text.toString()){
-                        existsFlag =true
-                        FirebaseDatabase.getInstance().reference.child("prospectivePatients").child(therapist.uid).child(uid!!).setValue(curUser)
+                requestTherapistButton.setOnClickListener {
+
+                    for (user in users!!) {
+                        if (user.email == uemail) {
+                            curUser = user
+                        }
                     }
+
+
+
+
+                    if (findTherapistByEmail.text.toString().isNullOrEmpty()) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Select a therapist from the list or enter therapist email manually",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    var existsFlag = false;
+                    for (therapist in therapistList as ArrayList<User>) {
+                        if (therapist.email == findTherapistByEmail.text.toString()) {
+                            existsFlag = true
+                            FirebaseDatabase.getInstance().reference.child("prospectivePatients")
+                                .child(therapist.uid).child(uid!!).setValue(curUser)
+                        }
+                    }
+                    if (existsFlag) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Therapist has been sent a patient request",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            applicationContext,
+                            "Therapist was not found",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                    //TODO request therapist
+
+                    b.dismiss()
+
                 }
-                if (existsFlag){
-                    Toast.makeText(applicationContext,"Therapist has been sent a patient request",Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(applicationContext,"Therapist was not found",Toast.LENGTH_LONG).show()
-                }
-
-                //TODO request therapist
-
-                b.dismiss()
-
+            }else{
+                Toast.makeText(applicationContext,"You cannot add more than one therapist",Toast.LENGTH_SHORT).show()
             }
 
-            //TODO: build therapist list and add node to firebase connecting patients and therapists
+
         }
 
         mailButton!!.setOnClickListener{
@@ -304,6 +323,30 @@ class PatientHomeActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.i(TherapistHomeActivity.TAG, "loading patients was canceled")
+            }
+        })
+        databasePatients!!.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                personalTherapist = ""
+                var user: User? = null
+                for (data in snapshot.children){
+                    for (x in data.children){
+                        try {
+                            user = x.getValue(User::class.java)
+                        }catch (e:Exception){
+                            Log.e(TAG,e.toString())
+                        }finally{
+                            if (user!!.uid == uid){
+                                personalTherapist = data.key!!
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
             }
         })
     }

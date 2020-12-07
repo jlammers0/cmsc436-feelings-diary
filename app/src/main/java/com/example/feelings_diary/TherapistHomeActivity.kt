@@ -102,7 +102,7 @@ class TherapistHomeActivity : AppCompatActivity() {
             dialogBuilder.setView(dialogView)
 
             val removePatientButton = dialogView.findViewById<View>(R.id.removePatientButton) as Button
-            val deleteThisTherapistButton = dialogView.findViewById<View>(R.id.deleteThisTherapistButton) as Button
+
             val subscribedPatientList = dialogView.findViewById<View>(R.id.subscribedPatientList) as ListView
 
             val subscribedPatientListAdapter = ProspectivePatientList(this,patients)
@@ -116,14 +116,17 @@ class TherapistHomeActivity : AppCompatActivity() {
             val b = dialogBuilder.create()
             b.show()
             removePatientButton.setOnClickListener{
-                patients.remove(curPatient)
-                mDatabase!!.reference.child("patients").child(uid!!).child(curPatient!!.uid).removeValue()
-                Toast.makeText(this,"Patient has been removed",Toast.LENGTH_SHORT).show()
+                val x = patients.remove(curPatient)
+                if (x) {
+                    mDatabase!!.reference.child("patients").child(uid!!).child(curPatient!!.uid)
+                        .removeValue()
+                    Toast.makeText(this, "Patient has been removed", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this,"You need to select a patient to remove",Toast.LENGTH_SHORT).show()
+                }
                 b.dismiss()
             }
-            deleteThisTherapistButton.setOnClickListener {
-
-            }
+            
 
 
         }
