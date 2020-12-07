@@ -55,6 +55,7 @@ class TherapistHomeActivity : AppCompatActivity() {
         addPatientButton = findViewById(R.id.therapistAddPatientButton)
         settingsButton = findViewById(R.id.therapistSettingsButton)
         logoutButton = findViewById(R.id.therapistLogoutButton)
+
         mAuth = FirebaseAuth.getInstance()
         patientListView = findViewById(R.id.patientList)
         mDatabase = FirebaseDatabase.getInstance()
@@ -91,7 +92,12 @@ class TherapistHomeActivity : AppCompatActivity() {
             if (selectedPatient == null){
                 Toast.makeText(applicationContext,"Must select a patient from list to view their check-ins",Toast.LENGTH_SHORT).show()
             }else{
-                //TODO: show checkins
+                startActivity(Intent(this@TherapistHomeActivity,TCICommentActivity::class.java).putExtra(
+                    USER_ID, uid).putExtra(
+                    USER_EMAIL,uemail).putExtra(
+                    CURR_PATIENT_ID, selectedPatient!!.uid).putExtra(
+                    CURR_PATIENT_EMAIL, selectedPatient!!.email)
+                )
             }
         }
 
@@ -184,6 +190,7 @@ class TherapistHomeActivity : AppCompatActivity() {
             startActivity(Intent(this@TherapistHomeActivity,MailInboxActivity::class.java).putExtra(USER_ID,uid).putExtra(
                 USER_EMAIL,uemail))
         }
+
 
         addPatientButton.setOnClickListener{
 
@@ -378,5 +385,7 @@ class TherapistHomeActivity : AppCompatActivity() {
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
+        const val CURR_PATIENT_ID = "CPID"
+        const val CURR_PATIENT_EMAIL = "CPEM"
     }
 }
