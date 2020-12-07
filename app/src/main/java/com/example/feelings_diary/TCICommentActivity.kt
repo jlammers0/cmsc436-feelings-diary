@@ -69,7 +69,7 @@ class TCICommentActivity : AppCompatActivity() {
                     }
                 }
 
-                val sortedEntries = diaryEntries.sortedByDescending { it.long_date }
+                val sortedEntries = diaryEntries.sortedByDescending { it.date }
                 diaryEntries = sortedEntries.toMutableList()
                 val checkAdapter = CheckInAdapter(this@TCICommentActivity, diaryEntries, puid)
                 checkListView!!.adapter = checkAdapter
