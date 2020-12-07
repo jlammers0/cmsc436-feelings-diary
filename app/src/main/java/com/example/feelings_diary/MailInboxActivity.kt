@@ -48,7 +48,7 @@ class MailInboxActivity : AppCompatActivity(){
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if (p2==0){//date
                     searchCriteria = "date"
-                    var dateList = ArrayList<String>()
+                    val dateList = ArrayList<String>()
                     for (x in messageList!!){
                         if (!dateList.contains(x.date)){
                             dateList.add(x.date)
@@ -59,7 +59,7 @@ class MailInboxActivity : AppCompatActivity(){
                 }
                 if (p2 == 1){//from
                     searchCriteria = "from"
-                    var fromList = ArrayList<String>()
+                    val fromList = ArrayList<String>()
                     for (x in messageList!!){
                         if (!fromList.contains(x.from)){
                             fromList.add(x.from)
@@ -82,7 +82,7 @@ class MailInboxActivity : AppCompatActivity(){
                 }
                 if(p2==3){//subject
                     searchCriteria = "subject"
-                    var subjectList = ArrayList<String>()
+                    val subjectList = ArrayList<String>()
                     for (x in messageList!!){
                         if (!subjectList.contains(x.subject)){
                             subjectList.add(x.subject)
@@ -146,7 +146,7 @@ class MailInboxActivity : AppCompatActivity(){
                     }
                 }
             }
-            val messageAdapter = MailMessage(this@MailInboxActivity,messageList2!!)
+            val messageAdapter = MailMessage(this@MailInboxActivity,messageList2)
             mailListView!!.adapter = messageAdapter
         }
 

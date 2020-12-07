@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     private var registerBtn: Button?= null
     private var loginBtn: Button?=null
     private var mAuth: FirebaseAuth? = null
-    private var mDatabase: FirebaseDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
 
         if (mAuth!!.currentUser != null){
-            var uid = mAuth!!.currentUser!!.uid
+            val uid = mAuth!!.currentUser!!.uid
             FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:
                 ValueEventListener {
 
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                     Log.i(LoginActivity.TAG,"this was executed")
                     var user: User? = null
                     user = snapshot.child(uid).getValue(User::class.java)
-                    var userGroup = user!!.group
+                    val userGroup = user!!.group
                     if(userGroup.equals("therapist",true)){
                         startActivity(Intent(this@MainActivity,TherapistHomeActivity::class.java).putExtra(
                             USER_ID,

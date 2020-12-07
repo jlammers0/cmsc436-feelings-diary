@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
-import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -66,7 +65,7 @@ class CheckInListActivity : AppCompatActivity(){
 
         databaseDiary!!.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                diaryEntries!!.clear()
+                diaryEntries.clear()
 
                 var entry: DiaryEntry? = null
                 for(data in snapshot.child(uid!!).children){
@@ -75,7 +74,7 @@ class CheckInListActivity : AppCompatActivity(){
                     }catch(e:Exception){
                         Log.e(TAG,e.toString())
                     }finally{
-                        diaryEntries!!.add(entry!!)
+                        diaryEntries.add(entry!!)
                     }
                 }
 
@@ -83,7 +82,7 @@ class CheckInListActivity : AppCompatActivity(){
 
                 for(ent in diaryEntries){
 
-                    var curCalDate = Calendar.getInstance()
+                    val curCalDate = Calendar.getInstance()
                     curCalDate.timeInMillis = ent.long_date
                     if(selectedDate!!.get(Calendar.DAY_OF_YEAR) == curCalDate.get(Calendar.DAY_OF_YEAR) &&
                             selectedDate!!.get(Calendar.YEAR) == curCalDate.get(Calendar.YEAR)){

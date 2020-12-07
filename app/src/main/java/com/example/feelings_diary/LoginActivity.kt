@@ -1,14 +1,21 @@
+@file:Suppress("CascadeIf", "CascadeIf")
+
 package com.example.feelings_diary
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class LoginActivity : AppCompatActivity() {
     private var mDatabase: FirebaseDatabase? = null
@@ -53,8 +60,7 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     Log.i(TAG,"this was executed")
-                    var user: User? = null
-                    user = snapshot.child(uid).getValue(User::class.java)
+                    val user: User? = snapshot.child(uid).getValue(User::class.java)
                     userGroup = user!!.group
                     if(userGroup.equals("therapist",true)){
                         startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,
@@ -86,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
         val email: String = userEmail!!.text.toString()
         val password: String = userPassword!!.text.toString()
 
-        if(email.isNullOrEmpty() || password.isNullOrEmpty()) {
+        if(email.isEmpty() || password.isEmpty()) {
             Toast.makeText(
                 applicationContext,
                 "Please enter valid email and password",
@@ -103,15 +109,14 @@ class LoginActivity : AppCompatActivity() {
             if (task.isSuccessful){
                 Toast.makeText(applicationContext,"Login Successful",Toast.LENGTH_LONG).show()
                 val uid = mAuth!!.currentUser!!.uid
-                Log.i(TAG,"uid = ${uid}")
+                Log.i(TAG,"uid = $uid")
 
 
                     FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(object:ValueEventListener{
 
                     override fun onDataChange(snapshot: DataSnapshot) {
                         Log.i(TAG,"this was executed")
-                        var user: User? = null
-                        user = snapshot.child(uid).getValue(User::class.java)
+                        val user: User? = snapshot.child(uid).getValue(User::class.java)
                         userGroup = user!!.group
                         if(userGroup.equals("therapist",true)){
                             startActivity(Intent(this@LoginActivity,TherapistHomeActivity::class.java).putExtra(USER_ID,

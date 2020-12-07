@@ -1,12 +1,5 @@
 package com.example.feelings_diary
 
-import android.content.Intent
-import android.util.Log
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-
 
 class Validators {
 
@@ -43,7 +36,7 @@ class Validators {
         if(username.isNullOrEmpty()) {
             return false
         }else if (username.length in 4..16){
-                for (name: String? in unameList!!) {
+                for (name: String? in unameList) {
                     if (name.equals(username, true)) {
                         return false
                     }

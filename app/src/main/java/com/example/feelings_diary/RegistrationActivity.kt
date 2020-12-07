@@ -124,7 +124,7 @@ class RegistrationActivity : AppCompatActivity() {
                         Log.i(TAG,"Registration successful")
                         progressBar!!.visibility = View.GONE
                         val uid = mAuth!!.currentUser!!.uid
-                        Log.i(TAG,"Uid = ${uid}")
+                        Log.i(TAG,"Uid = $uid")
                         val user = User(username,email,uid,userGroup!!)
                         mDatabaseReference!!.child("users").child(uid).setValue(user)
 

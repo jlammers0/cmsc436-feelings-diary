@@ -5,9 +5,8 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.widget.ListView
 
-class NotificationReceiver() : BroadcastReceiver() {
+class NotificationReceiver : BroadcastReceiver() {
 
     companion object {
         const val NOT_ID = "feelings-diary-notification-id"

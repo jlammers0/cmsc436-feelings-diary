@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Patient Notifications List"
+        android:text="@string/patient_notifications_list"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         />
@@ -28,14 +28,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add a notification"
+        android:text="@string/add_a_notification"
         android:id="@+id/addNotificationButton"
         android:layout_gravity="center_horizontal"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Click on a notification to remove it"
-        android:id="@+id/removeNotification"
+        android:text="@string/click_on_a_notification_to_remove_it"
         android:layout_gravity="center_horizontal"/>
     <TextView
         android:id="@+id/theremail"
@@ -58,7 +57,7 @@
         android:id="@+id/removeTherapistButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remove Therapist"
+        android:text="@string/remove_therapist"
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"/>
 

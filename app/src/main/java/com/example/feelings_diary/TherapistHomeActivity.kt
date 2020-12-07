@@ -2,18 +2,15 @@ package com.example.feelings_diary
 
 import android.content.ContentUris
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 
 class TherapistHomeActivity : AppCompatActivity() {
 
@@ -21,7 +18,7 @@ class TherapistHomeActivity : AppCompatActivity() {
     private lateinit var patientListView: ListView
     private lateinit var messageButton: Button
     private lateinit var aptButton: Button
-    
+
     private lateinit var mailButton: ImageButton
     private lateinit var calendarButton: ImageButton
     private lateinit var addPatientButton: ImageButton
@@ -356,7 +353,7 @@ class TherapistHomeActivity : AppCompatActivity() {
                         }catch (e:Exception){
                             Log.e(TAG,e.toString())
                         }finally{
-                            for (y in prospectivePatients!!){
+                            for (y in prospectivePatients){
                                 if(user!!.uid == y.uid){
                                     prospectivePatients.remove(user)
                                     mDatabase!!.reference.child("prospectivePatients").child(uid!!).child(user!!.uid).removeValue()

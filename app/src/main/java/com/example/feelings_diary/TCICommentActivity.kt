@@ -1,5 +1,6 @@
 package com.example.feelings_diary
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +9,6 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 class TCICommentActivity : AppCompatActivity() {
     private var backButton: Button? = null
@@ -24,6 +23,7 @@ class TCICommentActivity : AppCompatActivity() {
     private var checkListView: ListView? = null
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.checkin_listview_therapist)
@@ -56,7 +56,7 @@ class TCICommentActivity : AppCompatActivity() {
 
         databaseDiary!!.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                diaryEntries!!.clear()
+                diaryEntries.clear()
                 Log.i(TAG, puid)
                 var entry: DiaryEntry? = null
                 for(data in snapshot.child(puid!!).children){
@@ -65,11 +65,11 @@ class TCICommentActivity : AppCompatActivity() {
                     }catch(e:Exception){
                         Log.e(TAG,e.toString())
                     }finally{
-                        diaryEntries!!.add(entry!!)
+                        diaryEntries.add(entry!!)
                     }
                 }
 
-                var sortedEntries = diaryEntries!!.sortedByDescending { it.long_date }
+                val sortedEntries = diaryEntries.sortedByDescending { it.long_date }
                 diaryEntries = sortedEntries.toMutableList()
                 val checkAdapter = CheckInAdapter(this@TCICommentActivity, diaryEntries, puid)
                 checkListView!!.adapter = checkAdapter
@@ -87,6 +87,5 @@ class TCICommentActivity : AppCompatActivity() {
         const val TAG = "feelings-diary-log"
         const val USER_ID = "com.example.tesla.myhomelibrary.userid"
         const val USER_EMAIL = "com.example.tesla.myhomelibrary.useremail"
-        const val DATE_SELECTED = "date selected"
     }
 }

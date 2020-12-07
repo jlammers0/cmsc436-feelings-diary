@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:id="@+id/one_check">
+    android:layout_height="match_parent">
 
     <TextView
         android:text="@string/date_of_entry"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:id="@+id/date_Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -35,13 +34,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="Your happiness score:"/>
+        android:text="@string/your_happiness_score"/>
     <TextView
         android:id="@+id/score_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:text="Score Text"/>
+        android:text="@string/score_text"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -60,7 +59,7 @@
         android:id="@+id/therapist_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint ="Therapist Comment Here"
+        android:hint ="@string/therapist_comment_here"
         android:visibility = "gone"
         android:importantForAutofill="no"
         android:inputType= "text" />
@@ -68,7 +67,7 @@
         android:id="@+id/therapist_save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Comment"
+        android:text="@string/save_comment"
         android:visibility = "gone"/>
 
 </LinearLayout>

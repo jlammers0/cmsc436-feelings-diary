@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat.is24HourFormat
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -13,7 +12,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import java.text.DateFormat
 import java.util.*
 
 //DatePicker and time picker code taken from
@@ -111,7 +109,7 @@ class NewMessageActivity:AppCompatActivity(),DatePickerDialog.OnDateSetListener,
 
 
             val message = Message(dateView!!.text.toString(),uemail!!,toView!!.text.toString(),type,subjectView!!.text.toString(),bodyView!!.text.toString(),meetDate!!)
-            FirebaseDatabase.getInstance().reference.child("inbox").child(toUser!!.uid).child(dateView!!.text.toString()).setValue(message)
+            FirebaseDatabase.getInstance().reference.child("inbox").child(toUser.uid).child(dateView!!.text.toString()).setValue(message)
             Toast.makeText(applicationContext,"Message has been sent", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this@NewMessageActivity,MailInboxActivity::class.java).putExtra(
                 USER_ID,uid).putExtra(USER_EMAIL,uemail))

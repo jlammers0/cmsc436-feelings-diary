@@ -83,12 +83,12 @@ class CheckInActivity: AppCompatActivity() {
         saveButton!!.setOnClickListener{
             val t = System.currentTimeMillis()
             val d = Date(t)
-            var entry: DiaryEntry? = null
-            if (intent.getStringExtra("edit")!= null){
+            val entry: DiaryEntry?
+            entry = if (intent.getStringExtra("edit")!= null){
                 val date = intent.getStringExtra("date")
-                entry = DiaryEntry(date!!, mSeekBar.progress, t,  mFeelText?.text.toString())
+                DiaryEntry(date!!, mSeekBar.progress, t,  mFeelText?.text.toString())
             }else{
-                entry = DiaryEntry(d.toString(), mSeekBar.progress, t,  mFeelText?.text.toString())
+                DiaryEntry(d.toString(), mSeekBar.progress, t,  mFeelText?.text.toString())
             }
 
             mDatabaseReference!!.child("diary").child(uid!!).child(entry.date).setValue(entry)

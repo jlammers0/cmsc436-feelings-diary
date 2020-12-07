@@ -9,17 +9,17 @@ import com.google.firebase.database.FirebaseDatabase
 
 class CheckInAdapter (private val context: Activity, private var check: List<DiaryEntry>, private var uid: String?):
     ArrayAdapter<DiaryEntry> (context, R.layout.layout_checkin_list, check){
-    @SuppressLint("ViewHolder", "InflateParams")
+    @SuppressLint("ViewHolder", "InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater
         val listViewItem = inflater.inflate(R.layout.layout_checkin_list,null,true)
-        val linearLayout = listViewItem.findViewById<LinearLayout>(R.id.one_check)
+
         val checkInText = listViewItem.findViewById<View>(R.id.comment_text) as TextView
         val dateText = listViewItem.findViewById<View>(R.id.date_text) as TextView
         val scoreText = listViewItem.findViewById<View>(R.id.score_text) as TextView
 
 
-        var entry = check[position]
+        val entry = check[position]
         checkInText.text = entry.comment
         dateText.text = entry.date
         scoreText.text = entry.feeling.toString()
@@ -33,18 +33,18 @@ class CheckInAdapter (private val context: Activity, private var check: List<Dia
             textView.visibility = View.VISIBLE
         }
         if(context is TCICommentActivity){
-            var pNameText = listViewItem.findViewById<TextView>(R.id.comment_Title)
+            val pNameText = listViewItem.findViewById<TextView>(R.id.comment_Title)
             pNameText.text = "Patient's Comment:"
-            var pScoreText = listViewItem.findViewById<TextView>(R.id.score_title)
+            val pScoreText = listViewItem.findViewById<TextView>(R.id.score_title)
             pScoreText.text = "Patient's Happiness Score:"
 
-            var editText = listViewItem.findViewById<EditText>(R.id.therapist_input)
+            val editText = listViewItem.findViewById<EditText>(R.id.therapist_input)
             editText.visibility = View.VISIBLE
-            var saveButton = listViewItem.findViewById<Button>(R.id.therapist_save_button)
+            val saveButton = listViewItem.findViewById<Button>(R.id.therapist_save_button)
             saveButton.visibility = View.VISIBLE
             saveButton.setOnClickListener{
                 entry.therapistComment = editText.text.toString()
-                var mDatabaseReference = FirebaseDatabase.getInstance().reference
+                val mDatabaseReference = FirebaseDatabase.getInstance().reference
                 mDatabaseReference.child("diary").child(uid!!).child(entry.date).setValue(entry)
                 Toast.makeText(context, "Comment saved. The patient will be able to view your comment",
                     Toast.LENGTH_LONG).show()
