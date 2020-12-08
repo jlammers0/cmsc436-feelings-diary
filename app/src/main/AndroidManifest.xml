@@ -22,17 +22,21 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.feelings_diary.LoginActivity"
+            android:noHistory="true"
             android:screenOrientation="portrait"/>
         <activity android:name="com.example.feelings_diary.RegistrationActivity"
+            android:noHistory="true"
             android:screenOrientation="portrait"/>
         <activity android:name="com.example.feelings_diary.PatientHomeActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.example.feelings_diary.TherapistHomeActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.example.feelings_diary.MailInboxActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity android:name="com.example.feelings_diary.MailMessageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity android:name="com.example.feelings_diary.MailReplyActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"/>
