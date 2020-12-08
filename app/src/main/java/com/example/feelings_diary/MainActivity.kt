@@ -1,3 +1,5 @@
+@file:Suppress("CascadeIf")
+
 package com.example.feelings_diary
 
 import android.content.Intent
@@ -23,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        // TODO: This is to make testing easier remove this in actual app
-        mAuth!!.signOut()
 
 
 

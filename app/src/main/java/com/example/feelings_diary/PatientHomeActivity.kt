@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.SystemClock
 import android.provider.CalendarContract
 import android.text.format.DateFormat
 import android.util.Log

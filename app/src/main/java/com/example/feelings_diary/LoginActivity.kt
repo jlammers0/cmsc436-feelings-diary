@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         if (!intent.getStringExtra(USER_EMAIL).isNullOrEmpty()) {
-            userEmail!!.setText(intent.getStringExtra("email"))
+            userEmail!!.setText(intent.getStringExtra(USER_EMAIL))
         }
         if (!intent.getStringExtra("password").isNullOrEmpty()) {
             userPassword!!.setText(intent.getStringExtra("password"))
